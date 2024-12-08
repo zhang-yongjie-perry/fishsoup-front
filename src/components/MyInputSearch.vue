@@ -1,15 +1,23 @@
 <template>
-    <a-input
-        v-model:value="innerValue"
-        :allowClear="allowClear"
-        :placeholder="placeholder"
-    >
-    </a-input>
-    <a-button id="action1" @click="toLocalSearch">{{ action1 }}</a-button>
-    <a-button id="action2" v-if="action2" @click="toNetworkSearch">
-        {{ action2 }}
-        <SyncOutlined style="margin-right: 10px;" :spin="action2Spin" />
-    </a-button>
+    <a-row>
+        <a-col :xl="16" :xs="24">
+            <a-input
+                v-model:value="innerValue"
+                :allowClear="allowClear"
+                :placeholder="placeholder"
+            >
+            </a-input>
+        </a-col>
+        <a-col :xl="4" :xs="12">
+            <a-button id="action1" @click="toLocalSearch">{{ action1 }}</a-button>
+        </a-col>
+        <a-col :xl="4" :xs="12">
+            <a-button id="action2" v-if="action2" @click="toNetworkSearch">
+                {{ action2 }}
+                <SyncOutlined style="margin-right: 10px;" :spin="action2Spin" />
+            </a-button>
+        </a-col>
+    </a-row>
 </template>
 
 <script setup lang="ts">
@@ -35,9 +43,13 @@ function toNetworkSearch() {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ant-input-affix-wrapper {
     border-radius: 10px;
+}
+
+#action2 {
+    padding: 4px 3px 4px 15px
 }
 
 .ant-btn {
@@ -45,7 +57,13 @@ function toNetworkSearch() {
     margin-left: 12px;
 }
 
-#action2 {
-    padding: 4px 3px 4px 15px
+@media (max-width: 576px) {
+    #action1 {
+        margin-left: 0px;
+    }
+
+    .ant-btn {
+        margin-top: 12px;
+    }
 }
 </style>

@@ -1,24 +1,24 @@
 <template>
     <Container @update:to-search="toSearch">
-        <a-row style="margin-top: 12px;min-height: 32px;">
-            <a-col :span="22">
+        <a-row class="row-tag">
+            <a-col :xl="22" :xs="17">
                 <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag>
             </a-col>
-            <a-col :span="2">
-                <a-button type="primary" @click="toCreateDoc()" style="border-radius: 8px;">开始创作</a-button>
+            <a-col :xl="2" :xs="7">
+                <a-button id="begin-create" type="primary" @click="toCreateDoc()" style="border-radius: 8px;">开始创作</a-button>
             </a-col>
         </a-row>
         <a-row class="content">
-            <a-col :span="8" v-for="sector in sectorList">
+            <a-col :xl="8" :xs="24" v-for="sector in sectorList">
                 <a-row>
-                    <a-col :span="19">
+                    <a-col :xl="19" :xs="20">
                         <h1 style="color: #009fe9;">{{ sector.name }}</h1>
                     </a-col>
-                    <a-col class="more-content" :span="5">
+                    <a-col class="more-content" :xl="5" :xs="4">
                         <router-link :to="`/creationList/${sector.page}/${sector.name}`">更多>></router-link>
                     </a-col>
                 </a-row>
-                <a-row style="width: 90%;">
+                <a-row id="row-width">
                     <a-col :span="24">
                         <hr>
                         <a-list item-layout="horizontal" :data-source="sector.dataSource" :locale="{emptyText: '暂无数据'}">
@@ -27,14 +27,14 @@
                                     <a-list-item-meta :description="item.summary">
                                         <template #title>
                                             <a-row>
-                                                <a-col :span="20">
+                                                <a-col :xl="19" :xs="18">
                                                     <router-link class="title-desc" :to="{path: `/creation/${item.id}`}">
                                                         <span>{{ item.title }}</span>
                                                     </router-link>
                                                     <SvgIcon v-if="item.visibleRange === '1'" iconName="icon-suoding"/>
                                                     <SvgIcon v-else iconName="icon-jiesuo"/>
                                                 </a-col>
-                                                <a-col :span="4">
+                                                <a-col :xl="5" :xs="6">
                                                     <div style="width: 100%;text-align: right;">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>
@@ -170,6 +170,31 @@ function toSearch() {
     .title-desc {
         padding: 0px;
         color: black
+    }
+}
+
+@media (max-width: 576px) {
+    .row-tag {
+        margin-top: -10px;
+        min-height: 32px;
+        #begin-create {
+            margin-top: 9px;
+        }
+    }
+
+    #row-width {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .row-tag {
+        margin-top: -12px;
+        min-height: 32px;
+    }
+
+    #row-width {
+        width: 90%;
     }
 }
 </style>

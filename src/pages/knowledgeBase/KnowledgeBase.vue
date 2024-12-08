@@ -1,21 +1,21 @@
 <template>
     <Container @update:to-search="toSearch">
-        <a-row style="margin-top: 12px;min-height: 32px">
+        <a-row class="row-tag">
             <a-col :span="24">
                 <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag>
             </a-col>
         </a-row>
         <a-row class="content" style="margin-top: 24px">
-            <a-col :span="8">
+            <a-col :xl="8" :xs="24">
                 <a-row>
-                    <a-col :span="19">
+                    <a-col :xl="19" :xs="20">
                         <h1 style="color: #009fe9">热点新闻</h1>
                     </a-col>
-                    <a-col class="more-content" :span="5">
+                    <a-col class="more-content" :xl="5" :xs="4">
                         <router-link to="/hotNews">更多>></router-link>
                     </a-col>
                 </a-row>
-                <a-row style="width: 90%">
+                <a-row class="row-width">
                     <a-col :span="24">
                         <hr>
                         <a-list item-layout="horizontal" :data-source="hotsDataList" :locale="{ emptyText: '暂无数据' }">
@@ -24,10 +24,10 @@
                                     <a-list-item-meta :description="item.desc">
                                         <template #title>
                                             <a-row>
-                                                <a-col :span="20">
+                                                <a-col :xl="19" :xs="19">
                                                     <a class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                                 </a-col>
-                                                <a-col :span="4">
+                                                <a-col :xl="5" :xs="5">
                                                     <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>
@@ -39,16 +39,16 @@
                     </a-col>
                 </a-row>
             </a-col>
-            <a-col :span="8" v-for="sector in sectorList">
+            <a-col :xl="8" :xs="24" v-for="sector in sectorList">
                 <a-row>
-                    <a-col :span="19">
+                    <a-col :xl="19" :xs="20">
                         <h1 style="color: #009fe9">{{ sector.name }}</h1>
                     </a-col>
-                    <a-col class="more-content" :span="5">
+                    <a-col class="more-content" :xl="5" :xs="4">
                         <router-link :to="`/creationList/${sector.page}/${sector.name}`">更多>></router-link>
                     </a-col>
                 </a-row>
-                <a-row style="width: 90%">
+                <a-row class="row-width">
                     <a-col :span="24">
                         <hr>
                         <a-list item-layout="horizontal" :data-source="sector.dataSource" :locale="{ emptyText: '暂无数据' }">
@@ -57,7 +57,7 @@
                                     <a-list-item-meta :description="item.summary">
                                         <template #title>
                                             <a-row>
-                                                <a-col :span="20">
+                                                <a-col :xl="19" :xs="18">
                                                     <router-link class="title-desc"
                                                         :to="{ path: `/creation/${item.id}` }">
                                                         <span>{{ item.title }}</span>
@@ -65,7 +65,7 @@
                                                     &nbsp
                                                     <span>[作者：{{ item.author }}]</span>
                                                 </a-col>
-                                                <a-col :span="4">
+                                                <a-col :xl="5" :xs="6">
                                                     <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>
@@ -176,26 +176,72 @@ function toSearch() {
 </script>
 
 <style lang="scss">
-.tag {
-    color: #505050;
-    font-size: 14px;
-    padding: 3px 24px 3px 24px;
-    margin-left: 12px;
-    border-radius: 8px;
-}
-
-.content {
-    .more-content {
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        color: #666;
-        cursor: pointer;
+@media (max-width: 576px) {
+    .row-tag {
+        margin-top: -10px;
+        min-height: 32px;
     }
 
-    .title-desc {
-        padding: 0px;
-        color: black;
+    .row-width {
+        width: 100%;
+    }
+
+    .tag {
+        color: #505050;
+        font-size: small;
+        padding: 3px 24px 3px 24px;
+        margin-left: 12px;
+        margin-top: 10px;
+        border-radius: 8px;
+    }
+
+    .content {
+        .more-content {
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .title-desc {
+            padding: 0px;
+            color: black;
+        }
     }
 }
+
+@media (min-width: 1200px) {
+    .row-tag {
+        margin-top: -12px;
+        min-height: 32px;
+    }
+
+    .row-width {
+        width: 90%;
+    }
+
+    .tag {
+        color: #505050;
+        font-size: 14px;
+        padding: 3px 24px 3px 24px;
+        margin-left: 12px;
+        border-radius: 8px;
+    }
+    .content {
+        .more-content {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .title-desc {
+            padding: 0px;
+            color: black;
+        }
+    }
+}
+
 </style>

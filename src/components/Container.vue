@@ -2,7 +2,7 @@
     <a-layout class="fish-home">
         <a-layout-header class="fish-header">
             <a-row>
-                <a-col :span="9">
+                <a-col :xl="{span: 8, pull: 0}" :xs="{span: 12, pull: 1}">
                     <ul class="left-entry">
                         <li v-for="link in links" class="entry-element">
                             <router-link :to="link.url" style="background-color: transparent;">
@@ -14,7 +14,7 @@
                         </li>
                     </ul>
                 </a-col>
-                <a-col :span="9">
+                <a-col :xl="{span: 8, pull: 0}" :xs="{span: 12, pull: 1}">
                     <a-input-search
                         v-model:value="searchRef"
                         :allowClear="true"
@@ -25,41 +25,42 @@
                         </template>
                     </a-input-search>
                 </a-col>
-                <a-col :span="1" :offset="1">
-                    <span class="go-back" @click="goBack()">返回</span>
+                <a-col :xl="{span: 1, push: 1}" :xs="{span: 3, push: 1}">
+                    <div class="go-back" @click="goBack()">返回</div>
                 </a-col>
-                <a-col :span="4">
+                <a-col :xl="{span: 7}" :xs="{span: 20}">
                     <ul class="right-entry">
                         <li>
-                            <span class="entry-username" @click="toLogin()">{{ userStore.loginName ? "hi~ " + userStore.loginName : "登录" }}</span>
+                            <span class="entry-username">你好，{{ userStore.loginName ? userStore.loginName : "游客" }}</span>
                         </li>
                         <li style="margin-left: 20px;">
                             <div style="display: inline-block;">
-                                <span v-if="!userStore.loginName" class="entry-username">尚未登录</span>
-                                <a-collapse v-else class="collapse" v-model:activeKey="activeKey">
-                                    <a-collapse-panel header="管理" key="1" :bordered="false" :showArrow="false">
-                                        <ul style="list-style-type: none;padding-inline-start: 0;cursor: pointer;" >
-                                            <li>资料</li>
-                                            <li>设置</li>
-                                            <li @click="toLogout()">退出</li>
-                                        </ul>
-                                    </a-collapse-panel>
-                                </a-collapse>
+                                <span v-if="!userStore.loginName" class="entry-username" @click="toLogin()">登录</span>
+                                <a-popconfirm v-else class="entry-username"
+                                    placement="bottomRight"
+                                    arrowPointAtCenter
+                                    title="确认退出吗?"
+                                    ok-text="退出"
+                                    cancel-text="取消"
+                                    @confirm="toLogout()"
+                                >
+                                    <a href="#">退出</a>
+                                </a-popconfirm>
                             </div>
                         </li>
                     </ul>
                 </a-col>
             </a-row>
         </a-layout-header>
-        <a-layout :style="{'padding': '12px 24px 12px 24px', 'min-height': height + 'px'}">
+        <a-layout class="content" :style="{'min-height': height + 'px'}">
             <slot></slot>
         </a-layout>
-        <a-layout-footer style="text-align: center;height: 20px;margin-bottom: 20px;margin-top: 0px;">路虽远，行则将至；梦虽遥，做则必成</a-layout-footer>
+        <a-layout-footer class="footer">路虽远，行则将至；梦虽遥，做则必成</a-layout-footer>
     </a-layout>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { logout } from '@/api/user'
 import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
@@ -121,100 +122,189 @@ function goBack() {
 </script>
 
 <style lang="scss">
-.fish-header {
-	width: 100%;
-	height: 144px;
-	background-color: #fff;
-	background-image: url('/header-back.png');
-
-    .ant-input-group-wrapper {
-        margin-top: 16px;
-        opacity: 0.85;
+@media (max-width: 576px) {
+    .ant-layout-header{
+        padding: 0;
+        line-height: 10px;
     }
-
-    .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-    }
-
-    .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        .ant-input-search-button {
-            border-radius: 0 10px 10px 0;
+    .fish-header {
+        width: 100%;
+        height: 100px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
         }
-    }
 
-	.left-entry {
-		float: left;
-		list-style-type: none;
-		display: flex;
-		flex-direction: row;
-
-		.entry-element {
-			margin-left: 50px;
-		}
-	}
-
-    .go-back {
-        color: #fff;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-	.right-entry {
-		float: right;
-		list-style-type: none;
-		display: flex;
-		flex-direction: row;
-        .collapse {
-            width: 100%;
-            height: 100%; 
-            background-color: transparent;
-            border: none;
-            align-items: center;
-            justify-content: center;
+        .ant-input-affix-wrapper {
+            border: 0px;
+            padding: 5px 10px;
         }
-	}
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
 
-	.entry-username {
-		color: #fff;
-		font-size: large;
-		cursor: pointer;
-	}
+        .ant-input {
+            font-size: small;
+            border: 0px;
+        }
 
-	.entry-title {
-		color: #fff;
-		font-size: large;
-		cursor: pointer;
-		&:hover {
-			color: burlywood
-		}
-	}
-}
-
-.ant-collapse {
-    border: none;
-    .ant-collapse-item {
-        border: none;
-        .ant-collapse-header {
-            font-size: large;
+        .ant-btn {
+            font-size: small;
+            border: 0px;
+            margin-left: 0px
+        }
+    
+        .left-entry {
+            margin-top: 25px;
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 3px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            margin-top: 16px;
+            margin-left: 13px;
             color: #fff;
+            font-size: small;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-top: 16px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            float: none;
+            color: #fff;
+            font-size: small;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: small;
+            cursor: pointer;
             &:hover {
-                font-weight: lighter;
+                color: burlywood
             }
         }
     }
+
+    .content {
+        padding: 0px 12px;
+        margin-top: 12px !important;
+    }
+
+    .footer {
+        text-align: center;
+        height: 12px;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    }
 }
 
-.ant-collapse-content {
-    border: none;
-    font-size: medium;
-    color: #fff;
-    background-color: transparent;
-    .ant-collapse-content-box {
-        padding-top: 0px;
-        padding-bottom: 0px;
+@media (min-width: 1200px) {
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 50px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: 34px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 12px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: 0px;
     }
 }
 </style>

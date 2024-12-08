@@ -9,22 +9,22 @@
             </a-col>
         </a-row>
         <a-row v-else style="margin: 12px 0px 16px 0px;">
-            <a-col :span="12">
+            <a-col :xl="12" :xs="24">
                 <a-input v-model:value="creation.title" placeholder="请输入标题" style="border-radius: 5px;"/>
             </a-col>
-            <a-col :span="2" :offset="1">
+            <a-col class="col-btn" :xl="{span: 2, offset: 1}" :xs="{span: 6}">
                 <a-select
                     v-model:value="creation.classify"
                     :options="[{value: '1', label: '专业'}, {value: '2', label: '文学'}, {value: '3', label: '随笔'}]"
                 ></a-select>
             </a-col>
-            <a-col :span="2">
+            <a-col class="col-btn" :xl="2" :xs="6">
                 <a-select
                     v-model:value="creation.visibleRange"
                     :options="[{value: '1', label: '私密'}, {value: '2', label: '公开'}]"
                 ></a-select>
             </a-col>
-            <a-col :span="2">
+            <a-col class="col-btn" :xl="2" :xs="6">
                 <a-button @click="toSaveCreation(false)" type="primary" style="border-radius: 5px;">保存</a-button>
             </a-col>
         </a-row>
@@ -193,5 +193,11 @@ function handleKeydown(event: any) {
 <style lang="scss">
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
     border-radius: 5px;
+}
+
+@media (max-width: 576px) {
+    .col-btn {
+        margin-top: 12px
+    }
 }
 </style>

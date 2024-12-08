@@ -6,7 +6,7 @@
 				<a href="https://5000yan.com/" target="_blank">国学5000言</a>
 			</template>
 			<a-row :gutter="16">
-				<a-col :span="4" v-for="(site, i) in novelSites">
+				<a-col :xl="4" :xs="8" v-for="(site, i) in novelSites">
 					<a-card :bordered="false" @click="toLinkNovelSite(site.url)"
 					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
 						<template #cover>
@@ -21,10 +21,10 @@
 		<a-card :loading="loadingPic" style="margin-top: 24px">
 			<template #title>
 				<a-row :gutter="16">
-					<a-col :span="4">
+					<a-col :xl="4" :xs="24">
 						<span>高清壁纸</span>
 					</a-col>
-					<a-col :span="10">
+					<a-col id="col-pic-search" :xl="10" :xs="20">
 						<MyInputSearch
 							placeholder="请输入查询内容"
 							action1="本地搜索"
@@ -42,22 +42,41 @@
 				<a href="https://www.bizhihui.com/page/2/?order=views" target="_blank">更多</a>
 			</template>
 			<a-row :gutter="32">
-				<a-col :span="12">
-					<a-carousel autoplay>
+				<a-col :xl="12" :xs="24">
+					<a-carousel autoplay arrows>
+						<template #prevArrow>
+							<div class="custom-slick-arrow" style="left: 10px; z-index: 16">
+								<double-left-outlined />
+							</div>
+						</template>
+						<template #nextArrow>
+							<div class="custom-slick-arrow" style="right: 10px">
+								<double-right-outlined />
+							</div>
+						</template>
 						<div v-for="item in pics8k">
-							<img class="car-image" :alt="item.title" :src="`${imgPrefix}/image/download/${item.thumbId}`" @click="enlargeImage(item.fileId)">
+							<a-image class="car-image" :alt="item.title" 
+								:src="`${imgPrefix}/image/download/${item.thumbId}`" 
+								:preview="{
+									src: `${imgPrefix}/image/download/${item.fileId}`,
+								}"
+							/>
 							<span class="desc">{{ item.title }}</span>
 							<a style="margin-left: 10px;" :href="`${imgPrefix}/image/download/${item.fileId}`" :download="`${item.title}.jpg`">下载</a>
 						</div>
 					</a-carousel>
 				</a-col>
-				<a-col :span="12">
+				<a-col class="col-pic-4k" :xl="12" :xs="24">
 					<a-row :gutter="16">
 						<a-col v-for="(pic, i) in pictures" :span="8">
-							<a-card :bordered="false"
-								:style="{'margin-top': i > 2 ? '25px' : '0px' }">
+							<a-card :bordered="false">
 								<template #cover>
-									<img :alt="pic.title" :src="`${imgPrefix}/image/download/${pic.thumbId}`" @click="enlargeImage(pic.fileId)" />
+									<a-image :alt="pic.title" 
+										:src="`${imgPrefix}/image/download/${pic.thumbId}`" 
+										:preview="{
+											src: `${imgPrefix}/image/download/${pic.fileId}`,
+										}"
+									/>
 									<span class="desc">
 										{{ pic.title.length > 30 ? pic.title.substring(0, 30) : pic.title }}
 										<a :href="`${imgPrefix}/image/download/${pic.fileId}`" :download="`${pic.title}.jpg`">下载</a>
@@ -85,10 +104,10 @@
 		<a-card :loading="loadingTv" style="margin-top: 24px">
 			<template #title>
 				<a-row>
-					<a-col :span="4">
+					<a-col :xl="4" :xs="24">
 						<span>精彩影视</span>
 					</a-col>
-					<a-col :span="10">
+					<a-col id="col-mv-search" :xl="10" :xs="20">
 						<MyInputSearch
 							placeholder="请输入查询内容"
 							action1="本地搜索"
@@ -108,11 +127,16 @@
 				<a href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
 			</template>
 			<a-row :gutter="32">
-				<a-col :span="4" v-for="(tv, i) in tvs">
+				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvs">
 					<a-card :bordered="false" @click="router.push('/movie/' + tv.id)"
 					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
 						<template #cover>
-							<img :alt="tv.synopsis" :src="tv.imgUrl" @error="() => tv.imgUrl = '/imgFailure.jpg'" />
+							<a-image class="img-mv-preview"
+								:alt="tv.synopsis" 
+								:src="tv.imgUrl" 
+								:preview="false"
+								fallback="data:image/png;base64,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"
+							/>
 						</template>
 						<a-card-meta :title="tv.title" :description="tv.synopsis">
 						</a-card-meta>
@@ -149,7 +173,7 @@ import { pageTvMovies, networkSearchMovies } from '@/api/movie'
 import { listPics8k, pagePics4k, searchPics } from '@/api/picture'
 import { successAlert, warningAlert } from '@/utils/AlertUtil'
 import useSearchTextState from '@/store/seach'
-import { SyncOutlined } from '@ant-design/icons-vue'
+import { SyncOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons-vue'
 
 const novelSites = ref([
 	{url: 'https://www.zhenhunxiaoshuo.com/', poster: '/novelPoster/zhenhun.jpg', title: '镇魂小说'},
@@ -203,7 +227,11 @@ function initPic8k() {
 			warningAlert(res.data.msg)
 			return
 		}
-		pics8k.value = res.data
+		pics8k.value = res.data.map((pic: any) => {
+			pic.originUrl = imgPrefix.value + '/image/download/' + pic.fileId
+			pic.thumbUrl = imgPrefix.value + '/image/download/' + pic.thumbId
+			return pic
+		})
 		loadingPic8k.value = false
 	})
 }
@@ -262,9 +290,6 @@ function toSearch() {
 	toFindTvMovies(1, 12)
 }
 
-function enlargeImage(value: string) {
-	enlargedImageUrl.value = imgPrefix.value + "/image/download/" + value
-}
 
 function closeImage() {
 	enlargedImageUrl.value = null
@@ -325,11 +350,6 @@ function toLinkNovelSite(url: string) {
 	line-height: 11px
 }
 
-.car-image {
-	width: 100%;
-	height: 100%;
-}
-
 .desc {
 	color: #888
 }
@@ -360,5 +380,110 @@ function toLinkNovelSite(url: string) {
 
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
 	opacity: 0;
+}
+
+@media (max-width: 576px) {
+	#col-pic-search {
+		margin-top: 12px;
+	}
+
+	#col-mv-search {
+		margin-top: 12px;
+	}
+
+	.col-pic-4k {
+		margin-top: 12px;
+		.ant-row>div:nth-child(n+4) {
+			margin-top: 12px;
+		}
+	}
+
+	.car-image {
+		width: 100%;
+		height: 100%;
+	}
+
+	.ant-carousel .slick-dots-bottom {
+		bottom: 70px;
+	}
+
+	.img-mv-preview {
+		width: 100%;
+		height: 128px;
+	}
+
+	.ant-carousel {
+		.slick-arrow.custom-slick-arrow {
+			width: 55px;
+			height: 55px;
+			margin-top: -50px;
+			font-size: 55px;
+			color: #fff;
+			background-color: rgba(31, 45, 61, 0.11);
+			opacity: 0.3;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:before {
+			display: none;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:hover {
+			opacity: 0.5;
+		}
+	}
+}
+
+@media (min-width: 1200px) {
+	.car-image {
+		width: 720px;
+		height: 100%;
+	}
+
+	.ant-carousel .slick-dots-bottom {
+		bottom: 50px;
+	}
+
+	.col-pic-4k {
+		.ant-row>div:nth-child(-n+3) {
+			margin-top: 2px;
+		}
+	
+		.ant-row>div:nth-child(n+4) {
+			margin-top: 32px;
+		}
+	}
+
+	.img-mv-preview {
+		width: 100%;
+		height: 282px;
+	}
+
+	.ant-carousel {
+		.slick-arrow.custom-slick-arrow {
+			width: 55px;
+			height: 55px;
+			margin-top: -45px;
+			font-size: 55px;
+			color: #fff;
+			background-color: rgba(31, 45, 61, 0.11);
+			opacity: 0.3;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:before {
+			display: none;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:hover {
+			opacity: 0.5;
+		}
+	}
 }
 </style>

@@ -22,7 +22,7 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:19099/',
+        target: 'http://localhost:9099/',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/fish')

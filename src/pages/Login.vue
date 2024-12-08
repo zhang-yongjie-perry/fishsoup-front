@@ -4,16 +4,17 @@
             <a-spin tip="登陆中..." style="margin-top: 145px;"></a-spin>
         </div>
         <h1 style="width: 100%;height: 200px;justify-content: center;display: flex;align-items: center;text-align: center;">欢迎来到鱼汤网</h1>
-        <a-form name="custom-validation"
-        ref="formRef"
-        :rules="rules"
-        :model="userInfo"
-        v-bind="layout"
-        @finish="submit">
-            <a-form-item label="用户名" name="username">
+        <a-form
+            name="custom-validation"
+            ref="formRef"
+            :rules="rules"
+            :model="userInfo"
+            v-bind="layout"
+            @finish="submit">
+            <a-form-item class="form-item" label="用户名" name="username">
                 <a-input v-model:value="userInfo.username" autocomplete="off" />
             </a-form-item>
-            <a-form-item label="密码" name="password" style="margin-top: 30px;">
+            <a-form-item class="form-item" label="密码" name="password" style="margin-top: 30px;">
                 <a-input v-model:value="userInfo.password" type="password" autocomplete="off" />
             </a-form-item>
             <a-form-item :wrapper-col="{ span: 24 }" style="margin-top: 30px;">
@@ -125,3 +126,9 @@ function resetForm() {
     formRef.value.resetFields();
 }
 </script>
+<style>
+.form-item {
+    width: 70%;
+    margin: auto
+}
+</style>

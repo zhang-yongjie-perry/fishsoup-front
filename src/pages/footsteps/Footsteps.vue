@@ -1,82 +1,74 @@
 <template>
     <Container>
-        <a-row>
-            <a-col :span="24">
-                <a-card title="最近浏览">
-                    <a-list item-layout="horizontal" :data-source="browsingCreations" :locale="{ emptyText: '暂无数据' }">
-                        <template #renderItem="{ item }">
-                            <a-list-item>
-                                <a-list-item-meta :description="item.summary">
-                                    <template #title>
-                                        <a-row>
-                                            <a-col :span="5">
-                                                <router-link
-                                                    :to="{ path: `/creation/${item.correlationId}` }">
-                                                    <span>{{ item.title }}</span>
-                                                </router-link>
-                                                &nbsp;
-                                                <span>[作者：{{ item.author }}]</span>
-                                            </a-col>
-                                            <a-col :span="5">
-                                                <div style="width: 100%;text-align: right;">阅读时间: {{ item.updateTime }}</div>
-                                            </a-col>
-                                        </a-row>
-                                    </template>
-                                </a-list-item-meta>
-                            </a-list-item>
+        <a-card title="最近浏览">
+            <a-list item-layout="horizontal" :data-source="browsingCreations" :locale="{ emptyText: '暂无数据' }">
+                <template #renderItem="{ item }">
+                    <a-list-item>
+                        <a-list-item-meta :description="item.summary">
+                            <template #title>
+                                <a-row class="reading">
+                                    <a-col :xl="5" :xs="12">
+                                        <router-link
+                                            :to="{ path: `/creation/${item.correlationId}` }">
+                                            <span>{{ item.title }}</span>
+                                        </router-link>
+                                        &nbsp;
+                                        <span>[作者：{{ item.author }}]</span>
+                                    </a-col>
+                                    <a-col :xl="5" :xs="12">
+                                        <div style="width: 100%;text-align: right;">阅读时间: {{ item.updateTime }}</div>
+                                    </a-col>
+                                </a-row>
+                            </template>
+                        </a-list-item-meta>
+                    </a-list-item>
+                </template>
+            </a-list>
+            <a-row style="margin: 12px;">
+                <a-col :span="24">
+                    <a-pagination v-model:current="pageCreation.pageNum" 
+                        :total="pageCreation.total"
+                        :defaultPageSize="12"
+                        :pageSize="pageCreation.pageSize"
+                        :pageSizeOptions="['12', '24', '48', '96']"
+                        showQuickJumper
+                        @change="listCreations"
+                        :show-total="(total: number) => `总计 ${total} 条 `"
+                    />
+                </a-col>
+            </a-row>
+        </a-card>
+        <a-card title="最近观看" style="margin-top: 12px">
+            <a-row :gutter="32" v-if="tvs.length > 0">
+                <a-col :xl="4" :xs="16" v-for="(tv, i) in tvs">
+                    <a-card :bordered="false" @click="router.push('/movie/' + tv.correlationId)"
+                    :style="{'margin-top': i > 5 ? '25px' : '0px' }" class="watching">
+                        <template #cover>
+                            <img :alt="tv.episode" :src="tv.imageUrl" @error="() => tv.imageUrl = '/imgFailure.jpg'" />
                         </template>
-                    </a-list>
-                    <a-row style="margin: 12px;">
-						<a-col :span="24">
-							<a-pagination v-model:current="pageCreation.pageNum" 
-								:total="pageCreation.total"
-								:defaultPageSize="12"
-								:pageSize="pageCreation.pageSize"
-								:pageSizeOptions="['12', '24', '48', '96']"
-								showQuickJumper
-								@change="listCreations"
-								:show-total="(total: number) => `总计 ${total} 条 `"
-							/>
-						</a-col>
-					</a-row>
-                </a-card>
-            </a-col>
-        </a-row>
-        <a-row style="margin-top: 12px">
-            <a-col :span="24">
-                <a-card title="最近观看">
-                    <a-row :gutter="32" v-if="tvs.length > 0">
-						<a-col :span="4" v-for="(tv, i) in tvs">
-							<a-card :bordered="false" @click="router.push('/movie/' + tv.correlationId)"
-							:style="{'margin-top': i > 5 ? '25px' : '0px' }">
-								<template #cover>
-									<img :alt="tv.episode" :src="tv.imageUrl" @error="() => tv.imageUrl = '/imgFailure.jpg'" />
-								</template>
-								<a-card-meta :title="tv.title">
-                                    <template #description>
-                                        {{ tv.episode.indexOf('集') === -1 ? '' : ' 观看至' + tv.episode }}<br v-if="tv.episode.indexOf('集') !== -1">{{ '上次观看 ' + tv.updateTime }}
-                                    </template>
-                                </a-card-meta>
-							</a-card>
-						</a-col>
-					</a-row>
-                    <a-list v-else :data-source="[]" :locale="{ emptyText: '暂无数据' }"></a-list>
-					<a-row style="margin: 12px;">
-						<a-col :span="24">
-							<a-pagination v-model:current="pageTv.pageNum"
-								:total="pageTv.total"
-								:defaultPageSize="12"
-								:pageSize="pageTv.pageSize"
-								:pageSizeOptions="['12', '24', '48', '96']"
-								showQuickJumper
-								@change="listTvMovies"
-								:show-total="(total: number) => `总计 ${total} 条 `"
-							/>
-						</a-col>
-					</a-row>
-                </a-card>
-            </a-col>
-        </a-row>
+                        <a-card-meta :title="tv.title">
+                            <template #description>
+                                {{ tv.episode.indexOf('集') === -1 ? '' : ' 观看至' + tv.episode }}<br v-if="tv.episode.indexOf('集') !== -1">{{ '上次观看 ' + tv.updateTime }}
+                            </template>
+                        </a-card-meta>
+                    </a-card>
+                </a-col>
+            </a-row>
+            <a-list v-else :data-source="[]" :locale="{ emptyText: '暂无数据' }"></a-list>
+            <a-row style="margin: 12px;">
+                <a-col :span="24">
+                    <a-pagination v-model:current="pageTv.pageNum"
+                        :total="pageTv.total"
+                        :defaultPageSize="12"
+                        :pageSize="pageTv.pageSize"
+                        :pageSizeOptions="['12', '24', '48', '96']"
+                        showQuickJumper
+                        @change="listTvMovies"
+                        :show-total="(total: number) => `总计 ${total} 条 `"
+                    />
+                </a-col>
+            </a-row>
+        </a-card>
     </Container>
 </template>
 <script setup lang="ts">
@@ -136,5 +128,9 @@ function listTvMovies(pageNumber: number, pageSize: number) {
 </script>
 
 <style lang="scss">
-
+@media (max-width: 576px) {
+    .reading {
+        font-size: small
+    }
+}
 </style>

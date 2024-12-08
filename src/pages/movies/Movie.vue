@@ -3,35 +3,40 @@
         <div id="mask-layer" v-if="loading">
             <a-spin tip="拼命加载中..."></a-spin>
         </div>
-        <a-layout-sider :width="310" v-model:collapsed="collapsed" :trigger="null" collapsible :collapsedWidth="50">
-            <div class="mv_titile" v-if="!collapsed">
-                {{ mv.title }}[{{ episode }}]
-            </div>
-            <a-card
-                style="width: 100%;margin-top: 24px;background-color: #0f0f1e;"
-                title="播放源"
-                :tab-list="tabList"
-                :active-tab-key="key"
-                :bordered="false"
-                :headStyle="{'color': '#fff'}"
-                :bodyStyle="{'max-height': '480px', 'overflow': 'auto'}"
-                @tabChange="(key: string) => onTabChange(key)"
-            >
-                <template #customRender="item">
-                <span>
-                    {{ item.key }}
-                </span>
-                </template>
-                <template #extra>
-                </template>
-                <a-button v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)" style="margin: 8px;">
-                    {{ pmv.episode }}
-                </a-button>
-            </a-card>
-        </a-layout-sider>
-        <a-layout-content>
-            <div id="player" ref="pl"></div>
-        </a-layout-content>
+        <a-row>
+            <a-col :xl="16" :xs="24">
+                <div id="player" ref="pl"></div>
+            </a-col>
+            <a-col :xl="8" :xs="24">
+                <a-card
+                    id="card-episode"
+                    :title="mv.title + '[' + episode + ']' + '播放源'"
+                    :tab-list="tabList"
+                    :active-tab-key="key"
+                    :bordered="false"
+                    :headStyle="{'color': '#fff'}"
+                    @tabChange="(key: string) => onTabChange(key)"
+                >
+                    <template #customRender="item">
+                    <span>
+                        {{ item.key }}
+                    </span>
+                    </template>
+                    <template #extra>
+                    </template>
+                    <a-button class="button-play" v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)">
+                        <span v-if="pmv.m3u8Url === mvUrl">
+                            <a-image style="width: 45px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
+                        </span>
+                        <span v-else>{{ pmv.episode }}</span>
+                    </a-button>
+                </a-card>
+            </a-col>
+        </a-row>
+        <a-row>
+            <a-col :span="24">
+            </a-col>
+        </a-row>
     </Container>
 </template>
 
@@ -96,7 +101,7 @@ onMounted(() => {
 function initPlayer() {
     playerRef.value = new Player({
         el: pl.value,
-        height: '100%',
+        height: '70vh',
         width: '100%',
         isLive: false,
         url: mvUrl.value,
@@ -183,18 +188,46 @@ onBeforeUnmount(() => {
     // background-color: #0f0f1e;
 }
 
-.mv_titile {
-    color: #fff;
-    text-align: center;
-    font-size: 30px;
-    margin-top: 32px;
-    margin-bottom: 32px;
-}
-
 .ant-tabs-tab-btn {
     color: #fff;
     &:hover {
         color: burlywood
+    }
+}
+
+@media (max-width: 576px) {
+    #card-episode {
+        margin-top: 12px;
+        width: 100%;
+        background-color: #0f0f1e;
+        height: 70vh;
+        .ant-card-body {
+            max-height: 50vh;
+            overflow: auto;
+        }
+    }
+
+    .button-play {
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #card-episode {
+        margin-left: 12px;
+        width: 100%;
+        background-color: #0f0f1e;
+        height: 70vh;
+        .ant-card-body {
+            max-height: 55vh;
+            overflow: auto;
+        }
+    }
+
+    .button-play {
+        margin-left: 16px;
+        margin-top: 16px;
     }
 }
 </style>
