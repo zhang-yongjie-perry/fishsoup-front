@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import { reactive, toRefs } from 'vue';
+import { defineStore } from "pinia"
+import { reactive, toRefs } from 'vue'
 
 declare type RouterUrl = {
     from?: string,
@@ -14,13 +14,13 @@ export const useRouterState = defineStore('fish-router', () => {
         to: '',
         readOnly: true,
         personal: true,
-    });
-    const getRouterState = (): RouterUrl => routerUrl;
+    })
+    const getRouterState = (): RouterUrl => routerUrl
     const setRouterState = (fromVal: string, toVal: string, readOnly: boolean, personal: boolean) => {
-        routerUrl.from = fromVal;
-        routerUrl.to = toVal;
-        routerUrl.readOnly = readOnly;
-        routerUrl.personal = personal;
+        routerUrl.from = fromVal
+        routerUrl.to = toVal
+        routerUrl.readOnly = readOnly
+        routerUrl.personal = personal
     }
     return {
         ...toRefs(routerUrl),
@@ -32,6 +32,6 @@ export const useRouterState = defineStore('fish-router', () => {
         key: 'fish-router',
         storage: localStorage
     }
-});
+})
 
-export default useRouterState;
+export default useRouterState

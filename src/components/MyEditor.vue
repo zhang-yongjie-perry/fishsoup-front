@@ -29,79 +29,81 @@ import type { ImageElement } from '@/interfaces/Entity'
 import { useUserInfo } from '@/store/user'
 import { uploadImg } from '@/api/creation'
 import { warningAlert } from '@/utils/AlertUtil'
+import useRouterState from '@/store/router'
 
-const userState = useUserInfo();
+const routerState = useRouterState()
+const userState = useUserInfo()
 const props = defineProps<{
     readOnly?: Boolean,
     modelValue?: String,
     myStyle?: Object
-}>();
+}>()
 
-const content = ref(props.modelValue);
+const content = ref(props.modelValue)
 
 // 在 3.4 及以下版本，foo 是一个实际的常量，永远不会改变。
 // 在 3.5 及以上版本，当在同一个 <script setup> 代码块中访问由 defineProps 解构的变量时，prop 可以被追踪变化。
 watch(() => props.modelValue, 
     (value) => {
-        content.value = value;
+        content.value = value
     },
     { immediate: true, deep: true }
 )
 
 // 编辑器实例，必须用 shallowRef
-const editorRef = shallowRef();
+const editorRef = shallowRef()
 
 const handleCreated = (editor: any) => {
     editorRef.value = editor // 记录 editor 实例，重要！
 }
 
 // 插入过的图片
-let insertedImages = reactive<string[]>([]);
+let insertedImages = reactive<string[]>([])
 
 // 现有的图片
-let currentImages = reactive<string[]>([]);
+let currentImages = reactive<string[]>([])
 
-const emit = defineEmits(['update:modelValue', 'update:toDelImages', 'update:text']);
+const emit = defineEmits(['update:modelValue', 'update:toDelImages', 'update:text'])
 watch(
     () => content.value,
     (newVal) => {
-        const editor = editorRef.value;
+        const editor = editorRef.value
         // 判断编辑器是否初始化完成
-        if (editor == null) return;
+        if (editor == null) return
         
         // 将文本内容同步至父组件
-        emit('update:modelValue', newVal);
-        emit('update:text', editor.getText());
+        emit('update:modelValue', newVal)
+        emit('update:text', editor.getText())
 
         // 清空当前图片的容器
-        currentImages.splice(0);
+        currentImages.splice(0)
         // 获取当前存在的图片
-        let cImages = editor.getElemsByType('image');
+        let cImages = editor.getElemsByType('image')
         if (!cImages || cImages.length <= 0) {
-            return;
+            return
         }
         // 将当前存在的图片放入当前图片的容器中
         cImages.forEach((image: any) => {
-            currentImages.push(image.alt);
+            currentImages.push(image.alt)
         });
         // 对插入图片和当前图片集合进行求差, 获取已删除的图片
-        let deletedImages = insertedImages.filter(insertedImage => !currentImages.includes(insertedImage));
+        let deletedImages = insertedImages.filter(insertedImage => !currentImages.includes(insertedImage))
         // 将删除的图片同步至父组件
-        emit('update:toDelImages', deletedImages);
+        emit('update:toDelImages', deletedImages)
     },
     { immediate: true, deep: true }
 )
 
 // 模式
-let mode = "defualt";
- 
+let mode = "defualt"
+
 // 编辑器配置, 排除录像上传功能
 const toolbarConfig = {
     excludeKeys: ['group-video']
-};
+}
 const editorConfig = {
     placeholder: '请输入正文内容...',
-    readOnly: props.readOnly,
+    readOnly: false,
     content: {},
     MENU_CONF: {
         uploadImage: {
@@ -144,14 +146,14 @@ const editorConfig = {
  
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
-    const editor = editorRef.value;
-    if (editor == null) return;
-    editor.destroy();
+    const editor = editorRef.value
+    if (editor == null) return
+    editor.destroy()
 })
 
 const handleDestroyed = () => {
-    editorRef.value = null;
-    insertedImages.splice(0);
+    editorRef.value = null
+    insertedImages.splice(0)
 }
 </script>
 

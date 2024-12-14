@@ -5,7 +5,7 @@
                 <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag>
             </a-col>
             <a-col :xl="2" :xs="7">
-                <a-button id="begin-create" type="primary" @click="toCreateDoc()" style="border-radius: 8px;">开始创作</a-button>
+                <a-button v-antishake id="begin-create" type="primary" @click="toCreateDoc()" style="border-radius: 8px;">开始创作</a-button>
             </a-col>
         </a-row>
         <a-row class="content">
@@ -98,14 +98,14 @@ const sectorList: any = reactive([
 ]);
 
 onMounted(() => {
-    routerState.readOnly = false;
-    routerState.personal = true;
+    routerState.readOnly = true
+    routerState.personal = true
     // 查询专业知识
-    toListCreations('1');
+    toListCreations('1')
     // 查询文学作品
-    toListCreations('2');
+    toListCreations('2')
     // 查询日志随笔
-    toListCreations('3');
+    toListCreations('3')
 })
 
 function toListCreations(classifyVal: string) {
@@ -134,6 +134,8 @@ function toListCreations(classifyVal: string) {
 }
 
 function toCreateDoc() {
+    routerState.readOnly = false
+    routerState.personal = true
     route.push("/creation")
 }
 

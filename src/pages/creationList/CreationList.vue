@@ -65,34 +65,34 @@
 </template>
 
 <script setup lang="ts">
-import { listCreations } from '@/api/creation';
-import type { DataItem } from '@/interfaces/Entity';
-import { warningAlert } from '@/utils/AlertUtil';
-import { onMounted, reactive } from 'vue';
-import { useUserInfo } from '@/store/user';
-import useRouterState from '@/store/router';
-import { ref } from 'vue';
-import useSearchTextState from '@/store/seach';
+import { listCreations } from '@/api/creation'
+import type { DataItem } from '@/interfaces/Entity'
+import { warningAlert } from '@/utils/AlertUtil'
+import { onMounted, reactive } from 'vue'
+import { useUserInfo } from '@/store/user'
+import useRouterState from '@/store/router'
+import { ref } from 'vue'
+import useSearchTextState from '@/store/seach'
 
-const { page, name } = defineProps(['page', 'name']);
-const userState = useUserInfo();
-const routerState = useRouterState();
-const dataSource = reactive<DataItem[]>([]);
-const pageNum = ref(1);
-const loading = ref(false);
-const loadingMore = ref(false);
-const hasMore = ref(false);
-const searchTextState = useSearchTextState();
+const { page, name } = defineProps(['page', 'name'])
+const userState = useUserInfo()
+const routerState = useRouterState()
+const dataSource = reactive<DataItem[]>([])
+const pageNum = ref(1)
+const loading = ref(false)
+const loadingMore = ref(false)
+const hasMore = ref(false)
+const searchTextState = useSearchTextState()
 
 onMounted(() => {
-    toGetCreationList(1, false);
+    toGetCreationList(1, false)
 })
 
 function toGetCreationList(pn: number | null, append: boolean) {
-    let classifyVal = page === 'major' ? '1' : page === 'literature' ? '2' : '3';
-    let authorVal = routerState.personal ? userState.loginName : '';
-    let visibleRangeVal = routerState.personal ? null : '2';
-    pageNum.value = pn === null ? pageNum.value + 1 : pn;
+    let classifyVal = page === 'major' ? '1' : page === 'literature' ? '2' : '3'
+    let authorVal = routerState.personal ? userState.loginName : ''
+    let visibleRangeVal = routerState.personal ? null : '2'
+    pageNum.value = pn === null ? pageNum.value + 1 : pn
     listCreations({
         classify: classifyVal, 
         author: authorVal,
@@ -103,18 +103,18 @@ function toGetCreationList(pn: number | null, append: boolean) {
             warningAlert(res.data.msg);
             return;
         }
-        hasMore.value = res.data.length === 10;
+        hasMore.value = res.data.length === 10
         if (append) {
-            dataSource.push(...res.data);
-            return;
+            dataSource.push(...res.data)
+            return
         }
-        dataSource.splice(0);
-        dataSource.push(...res.data);
+        dataSource.splice(0)
+        dataSource.push(...res.data)
     })
 }
 
 function toSearch(value: string) {
-    toGetCreationList(1, false);
+    toGetCreationList(1, false)
 }
 </script>
 

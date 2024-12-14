@@ -1,0 +1,6 @@
+// 主要用于禁用a标签
+.disabled {
+    pointer-events: none;
+    opacity: 0.5; /* 可选：改变透明度以指示链接被禁用 */
+    cursor: not-allowed; /* 改变光标样式 */
+}

@@ -19,8 +19,8 @@
             </a-form-item>
             <a-form-item :wrapper-col="{ span: 24 }" style="margin-top: 30px;">
                 <a-button type="primary" html-type="submit">登录</a-button>
-                <a-button style="margin-left: 30px" @click="toRegister()">注册</a-button>
-                <a-button style="margin-left: 30px" @click="resetForm()">重置</a-button>
+                <!-- <a-button style="margin-left: 30px" @click="toRegister()">注册</a-button> -->
+                <a-button v-antishake style="margin-left: 30px" @click="resetForm()">重置</a-button>
             </a-form-item>
         </a-form>
     </div>
@@ -104,7 +104,6 @@ function toRegister() {
                         loading.value = false;
                         return;
                     }
-                    console.log('登录成功');
                     userStore.setUserState(userInfo.username, "Bearer " + res.data.data.token, '');
                     router.push('/home');
                 }).catch(error => {

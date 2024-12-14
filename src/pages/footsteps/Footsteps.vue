@@ -77,8 +77,10 @@ import type { DataItem } from '@/interfaces/Entity'
 import { useRouter } from 'vue-router'
 import { pageFootsteps } from '@/api/footstep'
 import { warningAlert } from '@/utils/AlertUtil'
+import useRouterState from '@/store/router'
 
 const router = useRouter()
+const routerState = useRouterState()
 const browsingCreations = reactive<DataItem[]>([])
 const tvs = reactive<any[]>([])
 const pageCreation = reactive({
@@ -93,6 +95,8 @@ const pageTv = reactive<any>({
 })
 
 onMounted(() => {
+    routerState.readOnly = true
+    routerState.personal = false
     listCreations(1, 12)
     listTvMovies(1, 12)
 })

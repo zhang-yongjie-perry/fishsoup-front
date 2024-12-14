@@ -1,5 +1,5 @@
 <template>
-    <Container :height="650">
+    <Container>
         <div id="mask-layer" v-if="loading">
             <a-spin tip="拼命加载中..."></a-spin>
         </div>
@@ -24,17 +24,13 @@
                     </template>
                     <template #extra>
                     </template>
-                    <a-button class="button-play" v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)">
+                    <a-button v-antishake class="button-play" v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)">
                         <span v-if="pmv.m3u8Url === mvUrl">
-                            <a-image style="width: 45px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
+                            <a-image :preview="false" style="width: 45px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
                         </span>
                         <span v-else>{{ pmv.episode }}</span>
                     </a-button>
                 </a-card>
-            </a-col>
-        </a-row>
-        <a-row>
-            <a-col :span="24">
             </a-col>
         </a-row>
     </Container>
@@ -73,6 +69,10 @@ const tabList = computed(() => {
     return mv.playOrgs.map((org: PlayOrg) => ({'key': org.orgName, 'tab': org.orgName}))
 })
 
+const playerHeight = computed(() => {
+    return window.innerWidth <= 400 ? '40vh' : '70vh';
+})
+
 const playList = computed(() => {
     if (mv.playOrgs.length <= 0) {
         return []
@@ -101,13 +101,14 @@ onMounted(() => {
 function initPlayer() {
     playerRef.value = new Player({
         el: pl.value,
-        height: '70vh',
+        height: playerHeight.value,
         width: '100%',
         isLive: false,
         url: mvUrl.value,
         defaultMuted: true,
         plugins: [HlsPlugin],
         startTime: 20,
+        rotateFullscreen: true,
         poster: 'mvPoster.jpg',
         hls: {
             retryCount: 5, // 重试 3 次，默认值

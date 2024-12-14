@@ -24,6 +24,12 @@ const routes = [
     {path: '/footsteps', component: Footsteps, breadcrumbName: '足迹'},
 ]
 
-const router = createRouter({routes, history: createWebHashHistory()})
+const router = createRouter({
+    routes, 
+    history: createWebHashHistory(),
+    scrollBehavior (to, from, savedPosition) {
+        return { top: 0 }
+    }
+})
 
 export default router

@@ -21,14 +21,14 @@
                         placeholder="请输入查询内容"
                         @search="onSearch">
                         <template #enterButton>
-                            <a-button>搜索</a-button>
+                            <a-button v-antishake>搜索</a-button>
                         </template>
                     </a-input-search>
                 </a-col>
                 <a-col :xl="{span: 1, push: 1}" :xs="{span: 3, push: 1}">
                     <div class="go-back" @click="goBack()">返回</div>
                 </a-col>
-                <a-col :xl="{span: 7}" :xs="{span: 20}">
+                <a-col :xl="{span: 5, push: 2}" :xs="{span: 20, push: 0}">
                     <ul class="right-entry">
                         <li>
                             <span class="entry-username">你好，{{ userStore.loginName ? userStore.loginName : "游客" }}</span>
@@ -44,7 +44,7 @@
                                     cancel-text="取消"
                                     @confirm="toLogout()"
                                 >
-                                    <a href="#">退出</a>
+                                    <a v-antishake href="#">退出</a>
                                 </a-popconfirm>
                             </div>
                         </li>
@@ -101,6 +101,7 @@ function toLogin() {
 
 function toLogout() {
     if (!userStore.loginName) {
+        router.push("/login");
 		return;
 	}
 	logout({'username': userStore.loginName}).then(result => {
@@ -109,6 +110,7 @@ function toLogout() {
 			return;
 		}
 		userStore.setUserState("", "", "");
+        router.push("/login");
 	})
 }
 
@@ -122,7 +124,112 @@ function goBack() {
 </script>
 
 <style lang="scss">
-@media (max-width: 576px) {
+@media (max-width: 389px) {
+    .ant-layout-header{
+        padding: 0;
+        line-height: 10px;
+    }
+    .fish-header {
+        width: 100%;
+        height: 100px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+
+        .ant-input-affix-wrapper {
+            border: 0px;
+            padding: 5px 10px;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+
+        .ant-input {
+            font-size: x-small;
+            border: 0px;
+        }
+
+        .ant-btn {
+            font-size: x-small;
+            border: 0px;
+            margin-left: 0px
+        }
+    
+        .left-entry {
+            margin-top: 25px;
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 3px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            margin-top: 16px;
+            margin-left: 13px;
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-top: 16px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            float: none;
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 12px;
+        margin-top: 12px !important;
+    }
+
+    .footer {
+        text-align: center;
+        height: 12px;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    }
+}
+
+
+@media (min-width: 390px) and (max-width: 647px) {
     .ant-layout-header{
         padding: 0;
         line-height: 10px;
@@ -226,7 +333,89 @@ function goBack() {
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 648px) and (max-width: 1495px) {
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 20px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: 34px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+
+@media (min-width: 1496px) {
     .ant-layout-header{
         padding: 0;
     }
@@ -297,14 +486,14 @@ function goBack() {
     }
 
     .content {
-        padding: 12px 24px;
+        padding: 0px 24px;
     }
 
     .footer {
         text-align: center;
         height: 20px;
         margin-bottom: 20px;
-        margin-top: 0px;
+        margin-top: -5px;
     }
 }
 </style>

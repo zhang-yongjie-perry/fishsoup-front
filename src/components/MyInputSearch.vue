@@ -9,10 +9,10 @@
             </a-input>
         </a-col>
         <a-col :xl="4" :xs="12">
-            <a-button id="action1" @click="toLocalSearch">{{ action1 }}</a-button>
+            <a-button v-antishake id="action1" @click="toLocalSearch">{{ action1 }}</a-button>
         </a-col>
         <a-col :xl="4" :xs="12">
-            <a-button id="action2" v-if="action2" @click="toNetworkSearch">
+            <a-button v-antishake id="action2" v-if="action2" @click="toNetworkSearch">
                 {{ action2 }}
                 <SyncOutlined style="margin-right: 10px;" :spin="action2Spin" />
             </a-button>

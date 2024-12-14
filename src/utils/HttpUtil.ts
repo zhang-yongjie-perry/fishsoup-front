@@ -35,7 +35,7 @@ axios.interceptors.response.use(function (response) {
     // 删除用户缓存
     useUserInfo().setUserState('', '', '');
     // 返回登录页
-    router.push('/home');
+    router.push('/login');
   }
   return Promise.reject(error);
 })

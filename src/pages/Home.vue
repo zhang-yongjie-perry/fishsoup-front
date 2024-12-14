@@ -3,16 +3,16 @@
 		<a-card>
 			<template #title>免费阅读</template>
 			<template #extra>
-				<a href="https://5000yan.com/" target="_blank">国学5000言</a>
+				<a v-antishake href="http://www.guoxue.com/" target="_blank">国学网</a>
 			</template>
 			<a-row :gutter="16">
 				<a-col :xl="4" :xs="8" v-for="(site, i) in novelSites">
 					<a-card :bordered="false" @click="toLinkNovelSite(site.url)"
 					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
 						<template #cover>
-							<img :alt="site.title" :src="site.poster" @error="() => site.poster = '/imgFailure.jpg'" />
+							<img class="novel-poster" :alt="site.title" :src="site.poster" @error="() => site.poster = '/imgFailure.jpg'" />
 						</template>
-						<a-card-meta :title="site.title">
+						<a-card-meta :title="site.title" style="text-align: center;">
 						</a-card-meta>
 					</a-card>							
 				</a-col>
@@ -39,7 +39,7 @@
 			</template>
 			<template #extra>
 				<SyncOutlined style="margin-right: 10px;" :spin="spinPic" @click="refreshPics" />
-				<a href="https://www.bizhihui.com/page/2/?order=views" target="_blank">更多</a>
+				<a v-antishake href="https://www.bizhihui.com/page/2/?order=views" target="_blank">更多</a>
 			</template>
 			<a-row :gutter="32">
 				<a-col :xl="12" :xs="24">
@@ -62,7 +62,7 @@
 								}"
 							/>
 							<span class="desc">{{ item.title }}</span>
-							<a style="margin-left: 10px;" :href="`${imgPrefix}/image/download/${item.fileId}`" :download="`${item.title}.jpg`">下载</a>
+							<a v-antishake style="margin-left: 10px;" :href="`${imgPrefix}/image/download/${item.fileId}`" :download="`${item.title}.jpg`">下载</a>
 						</div>
 					</a-carousel>
 				</a-col>
@@ -79,7 +79,7 @@
 									/>
 									<span class="desc">
 										{{ pic.title.length > 30 ? pic.title.substring(0, 30) : pic.title }}
-										<a :href="`${imgPrefix}/image/download/${pic.fileId}`" :download="`${pic.title}.jpg`">下载</a>
+										<a v-antishake :href="`${imgPrefix}/image/download/${pic.fileId}`" :download="`${pic.title}.jpg`">下载</a>
 									</span>
 								</template>
 							</a-card>
@@ -124,7 +124,7 @@
 				</a-row>
 			</template>
 			<template #extra>
-				<a href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
+				<a v-antishake href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
 			</template>
 			<a-row :gutter="32">
 				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvs">
@@ -176,11 +176,12 @@ import useSearchTextState from '@/store/seach'
 import { SyncOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons-vue'
 
 const novelSites = ref([
-	{url: 'https://www.zhenhunxiaoshuo.com/', poster: '/novelPoster/zhenhun.jpg', title: '镇魂小说'},
+	{url: 'https://5000yan.com/', poster: '/novelPoster/guoxue.jpg', title: '国学5000言'},
+	{url: 'https://www.zhenhunxiaoshuo.com/', poster: '/novelPoster/zhenhun.jpg', title: '镇魂小说网'},
 	{url: 'https://www.70zw.net/', poster: '/novelPoster/qilin.jpg', title: '麒麟中文网'},
 	{url: 'http://www.szlajc.com/', poster: '/novelPoster/xiaoshuowang.jpeg', title: '小说网'},
 	{url: 'https://www.sc4418.com/', poster: '/novelPoster/mianfeixiaoshuo.jpeg', title: '免费全本小说阅读网'},
-	{url: 'https://www.jucewu.com/', poster: '/novelPoster/mianfei.jpg', title: '免费小说'},
+	// {url: 'https://www.jucewu.com/', poster: '/novelPoster/mianfei.jpg', title: '免费小说'},
 	{url: 'https://www.mianfeixiaoshuoyueduwang.com/', poster: '/novelPoster/mianfeiyuedu.jpg', title: '免费小说阅读网'},
 ])
 const spinPic = ref(false)
@@ -383,6 +384,11 @@ function toLinkNovelSite(url: string) {
 }
 
 @media (max-width: 576px) {
+	.novel-poster {
+		width: 100%;
+		height: 150px;
+	}
+
 	#col-pic-search {
 		margin-top: 12px;
 	}
@@ -438,6 +444,11 @@ function toLinkNovelSite(url: string) {
 }
 
 @media (min-width: 1200px) {
+	.novel-poster {
+		width: 100%;
+		height: 320px;
+	}
+
 	.car-image {
 		width: 720px;
 		height: 100%;

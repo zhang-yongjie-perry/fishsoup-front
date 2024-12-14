@@ -1,4 +1,5 @@
 import '@/assets/main.css'
+import '@/scss/mixin.scss'
 import 'ant-design-vue/dist/antd.css';
 import { createApp } from 'vue'
 import App from '@/App.vue'
@@ -24,10 +25,29 @@ const routerState = useRouterState();
 const whiteList = ['/', '/home', '/login']
 router.beforeEach((to, from, next) => {
     if (!whiteList.includes(to.path) && !userState.token) {
-        warningAlert('您尚未登录, 请先登录');
-        return '/home';
+        warningAlert('您尚未登录, 请先登录')
+        return '/login'
     }
     routerState.from = from.path;
     routerState.to = to.path;
     next();
+})
+
+// 防抖/放双击
+app.directive('antishake', (el, binding) => {
+    el.addEventListener('click', () => {
+        // if (el.getAttribute('href') && !el.classList.contains('disabled')) {
+        //     el.classList.add('disabled')
+        //     setTimeout(() => {
+        //         el.classList.remove('disabled')
+        //     }, binding.value || 3000)
+        //     return
+        // }
+        if (!el.disabled) {
+            el.disabled = true
+            setTimeout(() => {
+                el.disabled = false
+            }, binding.value || 3000)
+        }
+    })
 })
