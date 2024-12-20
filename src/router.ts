@@ -9,6 +9,8 @@ import Creation from '@/pages/myCreation/Creation.vue'
 import CreationList from '@/pages/creationList/CreationList.vue'
 import HotNews from '@/pages/hotNews/HotNews.vue'
 import Footsteps from '@/pages/footsteps/Footsteps.vue'
+import PersonalInfo from '@/pages/user/PersonalInfo.vue'
+import ChatRoom from '@/pages/user/ChatRoom.vue'
 
 const routes = [
     {path: '/', component: Home, breadcrumbName: '首页'},
@@ -22,6 +24,8 @@ const routes = [
     {path: '/creationList/:page/:name', component: CreationList, props: true, breadcrumbName: '作品列表'},
     {path: '/hotNews', component: HotNews, breadcrumbName: '热点新闻'},
     {path: '/footsteps', component: Footsteps, breadcrumbName: '足迹'},
+    {path: '/personalInfo', component: PersonalInfo, breadcrumbName: '个人信息'},
+    {path: '/chatRoom', component: ChatRoom, breadcrumbName: '聊天室'},
 ]
 
 const router = createRouter({

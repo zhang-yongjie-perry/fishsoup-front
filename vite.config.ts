@@ -21,12 +21,18 @@ export default defineConfig({
     port: 9090,
     host: true,
     proxy: {
+      '/api/chat': {
+        target: 'http://localhost:9091/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/chat')
+      },
       '/api': {
         target: 'http://localhost:9099/',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/fish')
-      }
+      },
     }
   }
 })

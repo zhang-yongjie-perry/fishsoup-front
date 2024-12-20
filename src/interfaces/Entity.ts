@@ -1,4 +1,5 @@
 import { SlateElement } from '@wangeditor/editor'
+import type { UserInfo } from '@/interfaces/User'
 
 export type ImageElement = SlateElement & {
     src: string
@@ -59,4 +60,9 @@ export interface TvMovie {
     status: number,
     lastUpdateTime: Date,
     playOrgs: any | PlayOrg[]
+}
+
+export interface MessageEntity {
+    status: number,
+    content: UserInfo[]
 }

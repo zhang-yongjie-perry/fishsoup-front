@@ -26,24 +26,31 @@
     </div>
 </template>
 <script setup lang="ts">
-import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
-import { reactive, ref } from 'vue';
-import type { UnwrapRef } from 'vue';
-import type { UserInfo } from '@/interfaces/User';
-import { login, register } from '@/api/user';
-import { useRouter } from 'vue-router';
-import { useUserInfo } from '@/store/user';
-import { message } from 'ant-design-vue';
+import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
+import { reactive, ref, nextTick } from 'vue'
+import type { UnwrapRef } from 'vue'
+import type { UserInfo } from '@/interfaces/User'
+import { login, register } from '@/api/user'
+import { useRouter } from 'vue-router'
+import { useUserInfo } from '@/store/user'
+import { message } from 'ant-design-vue'
+import useWebsocketStore from '@/store/websocket'
+import { chatOnline } from '@/utils/websocketUtil'
 
-let loading = ref(false);
-const formRef = ref();
-const router = useRouter();
-const userStore = useUserInfo();
+let loading = ref(false)
+const formRef = ref()
+const router = useRouter()
+const userStore = useUserInfo()
 message.config({top: '124px'})
-
+const websocket = useWebsocketStore().getWebsocket()!
+const websocketStore = useWebsocketStore()
 const userInfo: UnwrapRef<UserInfo> = reactive({
     username: '',
-    password: ''
+    password: '',
+    sex: null,
+    mobilePhone: '',
+    email: '',
+    onlineStatus: null
 })
 
 const rules = {
@@ -60,30 +67,31 @@ const rules = {
 const layout = {
     labelCol: { span: 10 },
     wrapperCol: { span: 5 },
-};
+}
 
 function submit() {
-    loading.value = true;
+    loading.value = true
     formRef.value
     .validate()
     .then(() => {
-        login(userInfo).then(result => {
+        login(userInfo).then((result) => {
             if (result.data.code !== '0') {
                 message.warning(result.data.msg ? result.data.msg : '登录失败, 请联系管理员', 1)    
-                loading.value = false;
-                return;
+                loading.value = false
+                return
             }
-            userStore.setUserState(userInfo.username, "Bearer " + result.data.data.token, '');
-            router.push('/home');
+            userStore.setUserState(userInfo.username, "Bearer " + result.data.data.token, result.data.data.user.mobilePhone, result.data.data.user.email, result.data.data.user.sex)
+            chatOnline()
+            router.push('/home')
         }).catch(error => {
-            loading.value = false;
+            loading.value = false
             message.warning(error)
         })
     })
     .catch((error: ValidateErrorEntity<UserInfo>) => {
-        loading.value = false;
+        loading.value = false
         message.warning(error)
-    });
+    })
 }
     
 function toRegister() {
@@ -94,38 +102,38 @@ function toRegister() {
             register(userInfo).then(result => {
                 if (result.data.code !== '0') {
                     message.warning(result.data.msg ? result.data.msg : '登录失败, 请联系管理员', 1)    
-                    loading.value = false;
-                    return;
+                    loading.value = false
+                    return
                 }
                 
                 login(userInfo).then(res => {
                     if (res.data.code !== '0') {
                         message.warning(res.data.msg ? res.data.msg : '登录失败, 请联系管理员', 1)    
-                        loading.value = false;
-                        return;
+                        loading.value = false
+                        return
                     }
-                    userStore.setUserState(userInfo.username, "Bearer " + res.data.data.token, '');
-                    router.push('/home');
+                    userStore.setUserState(userInfo.username, "Bearer " + res.data.data.token, res.data.data.user.mobilePhone, res.data.data.user.email, res.data.data.user.sex)
+                    router.push('/home')
                 }).catch(error => {
-                    loading.value = false;
+                    loading.value = false
                     message.warning(error)
                 })
             }).catch(error => {
-                loading.value = false;
+                loading.value = false
                 message.warning(error)
             })
         })
         .catch((error: ValidateErrorEntity<UserInfo>) => {
-            loading.value = false;
+            loading.value = false
             message.warning(error)
-        });
+        })
 }
 
 function resetForm() {
-    formRef.value.resetFields();
+    formRef.value.resetFields()
 }
 </script>
-<style>
+<style scoped>
 .form-item {
     width: 70%;
     margin: auto

@@ -4,22 +4,28 @@ import { reactive, toRefs } from "vue"
 interface IUserState {
     loginName: string,
     token: string,
-    mobilePhone: string
+    sex: string,
+    mobilePhone: string,
+    email: string
 }
 
 export const useUserInfo = defineStore('fish-user', () => {
     const state = reactive<IUserState>({
         loginName: '',
         token: '',
-        mobilePhone: ''
+        sex: '未知',
+        mobilePhone: '',
+        email: ''
     })
 
     const getState = (): IUserState => state;
 
-    const setUserState = (loginName: string, token: string, mobilePhone: string) => {
+    const setUserState = (loginName: string, token: string, mobilePhone: string, email: string, sex: string) => {
         state.loginName = loginName
         state.token = token
+        state.sex = sex
         state.mobilePhone = mobilePhone
+        state.email = email
     }
 
     return {
