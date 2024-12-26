@@ -124,7 +124,7 @@ const editorConfig = {
                     if (response.data.errno !== 0) {
                         return;
                     }
-                    insertFn(import.meta.env.VITE_FRONT_URL + "/image/download/" + response.data.data.url, 
+                    insertFn(import.meta.env.VITE_WEB_URL + "/image/download/" + response.data.data.url, 
                         response.data.data.alt, response.data.data.href);
                 }).catch(error => {
                     warningAlert(`图片上传失败: ${error}`)

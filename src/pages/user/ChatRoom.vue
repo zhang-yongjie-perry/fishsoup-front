@@ -26,7 +26,7 @@
                                                 :style="{'float': (message.username === userStore.loginName ? 'right' : 'left')}"
                                                 :position="message.username === userStore.loginName ? 'right' : 'left'"
                                             >
-                                            <div>{{ message.username }}</div>
+                                                <div>{{ message.username }}</div>
                                             </DialogBox>
                                         </div>
                                     </div>
@@ -68,6 +68,50 @@ const friends = reactive<UserInfo[]>([])
 const msgShow: any = reactive([])
 const msgWin = ref<any>(null)
 const messagesMap: any = useWebsocketStore().getMessage()!
+
+onMounted(() => {
+    // 进入聊天页置空提醒
+    useWebsocketStore().resetCount()
+    listUsers().then((res) => {
+        if (res.data.code === '1') {
+            message.warning('好友列表请求异常 ' + res.data.msg)
+            return
+        }
+
+        // 重置好友列表
+        friends.splice(0)
+        friends.push(...res.data)
+
+        // 默认选中的第一个好友, 如果之前选中过则不必重置选中
+        if (useWebsocketStore().getChatKey()) {
+            selectedKeys.value.splice(0)
+            selectedKeys.value.push(useWebsocketStore().getChatKey().split(":")[1])
+        } else {
+            selectedKeys.value.splice(0)
+            selectedKeys.value.push(friends[0].username)
+            useWebsocketStore().setChatKey(userStore.loginName + ":" + friends[0].username)
+        }
+
+        // 默认选中的好友聊天已读
+        useWebsocketStore().readMessage(userStore.loginName + ":" + selectedKeys.value[0])
+
+        // 获取聊天窗dom元素
+        msgWin.value = useTemplateRef('msgWin')
+
+        // 清空聊天记录
+        msgShow.splice(0)
+
+        // 如果有聊天记录则进行初始化
+        if (messagesMap[userStore.loginName + ":" + selectedKeys.value[0]] != null && messagesMap[userStore.loginName + ":" + selectedKeys.value[0]]!.content) {
+            msgShow.push(...messagesMap[userStore.loginName + ":" + selectedKeys.value[0]]!.content)
+            if (msgWin.value) {
+                nextTick(() => {
+                    msgWin.value.scrollTop = msgWin.value.scrollHeight
+                })
+            }
+        }
+    })
+})
 
 useWebsocketStore().$subscribe(() => {
     handleMsgChange(useWebsocketStore().getInstantMsg())
@@ -156,51 +200,6 @@ const handleMsgChange = (user: ChatUserInfo | null) => {
         msgWin.value.scrollTop = msgWin.value.scrollHeight
     })
 }
-
-onMounted(() => {
-    // 进入聊天页置空提醒
-    useWebsocketStore().resetCount()
-    listUsers().then((res) => {
-        if (res.data.code === '1') {
-            message.warning('好友列表请求异常 ' + res.data.msg)
-            return
-        }
-
-        // 重置好友列表
-        friends.splice(0)
-        friends.push(...res.data)
-
-        // 默认选中的第一个好友, 如果之前选中过则不必重置选中
-        if (useWebsocketStore().getChatKey()) {
-            selectedKeys.value.splice(0)
-            selectedKeys.value.push(useWebsocketStore().getChatKey().split(":")[1])
-        } else {
-            selectedKeys.value.splice(0)
-            selectedKeys.value.push(friends[0].username)
-            useWebsocketStore().setChatKey(userStore.loginName + ":" + friends[0].username)
-        }
-
-        // 默认选中的好友聊天已读
-        useWebsocketStore().readMessage(userStore.loginName + ":" + selectedKeys.value[0])
-
-        // 获取聊天窗dom元素
-        msgWin.value = useTemplateRef('msgWin')
-
-        // 清空聊天记录
-        msgShow.splice(0)
-
-        // 如果有聊天记录则进行初始化
-        if (messagesMap[userStore.loginName + ":" + selectedKeys.value[0]]!.content) {
-            msgShow.push(...messagesMap[userStore.loginName + ":" + selectedKeys.value[0]]!.content)
-            if (msgWin.value) {
-                nextTick(() => {
-                    msgWin.value.scrollTop = msgWin.value.scrollHeight
-                })
-            }
-        }
-    })
-
-})
 
 
 function handleKeyup(event: any) {

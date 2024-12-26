@@ -27,23 +27,21 @@
 </template>
 <script setup lang="ts">
 import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
-import { reactive, ref, nextTick } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { UnwrapRef } from 'vue'
 import type { UserInfo } from '@/interfaces/User'
-import { login, register } from '@/api/user'
+import { login, register, getPublicKey } from '@/api/user'
 import { useRouter } from 'vue-router'
 import { useUserInfo } from '@/store/user'
 import { message } from 'ant-design-vue'
-import useWebsocketStore from '@/store/websocket'
 import { chatOnline } from '@/utils/websocketUtil'
+import { JSEncrypt } from 'jsencrypt'
 
 let loading = ref(false)
 const formRef = ref()
 const router = useRouter()
 const userStore = useUserInfo()
 message.config({top: '124px'})
-const websocket = useWebsocketStore().getWebsocket()!
-const websocketStore = useWebsocketStore()
 const userInfo: UnwrapRef<UserInfo> = reactive({
     username: '',
     password: '',
@@ -51,6 +49,19 @@ const userInfo: UnwrapRef<UserInfo> = reactive({
     mobilePhone: '',
     email: '',
     onlineStatus: null
+})
+const crypt = new JSEncrypt();
+const publicKey = ref('')
+
+onMounted(() => {
+    getPublicKey().then(res => {
+        if (res.data.code === '1') {
+            message.warning('检测到网络异常, 请刷新页面后再进行登录')
+            return
+        }
+        publicKey.value = res.data.data.publicKey
+        crypt.setPublicKey(publicKey.value)
+    })
 })
 
 const rules = {
@@ -74,7 +85,9 @@ function submit() {
     formRef.value
     .validate()
     .then(() => {
-        login(userInfo).then((result) => {
+        const loginUserInfo = JSON.parse(JSON.stringify(userInfo))
+        loginUserInfo.password = crypt.encrypt(userInfo.password)
+        login(loginUserInfo, encodeURIComponent(publicKey.value)).then((result) => {
             if (result.data.code !== '0') {
                 message.warning(result.data.msg ? result.data.msg : '登录失败, 请联系管理员', 1)    
                 loading.value = false

@@ -44,7 +44,6 @@
                                 <a-dropdown placement="bottom">
                                     <a class="ant-dropdown-link" @click.prevent style="background-color: transparent;">
                                         <span class="entry-username">{{ userStore.loginName }}</span>
-                                        <DownOutlined />
                                     </a>
                                     <template #overlay>
                                         <a-menu style="opacity: 0.9;">
@@ -93,9 +92,8 @@ import { useRouter } from 'vue-router'
 import useSearchTextState from '@/store/seach'
 import useUserInfo from '@/store/user'
 import useRouterState from '@/store/router'
-import DownOutlined from 'ant-design-vue'
 import useWebsocketStore from '@/store/websocket'
-import { connectWebSocket, chatOffline } from '@/utils/websocketUtil'
+import { chatOffline } from '@/utils/websocketUtil'
 
 const { height } = defineProps(['height'])
 const searchRef = ref('')

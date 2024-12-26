@@ -5,7 +5,7 @@ import useUserInfo from '@/store/user'
 import router from "@/router"
 
 const axios = Axios.create({
-  baseURL: '/api'
+  baseURL: '/api/v2'
 })
 
 axios.interceptors.request.use(function (config: InternalAxiosRequestConfig<any>) {

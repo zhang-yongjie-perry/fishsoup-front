@@ -7,7 +7,7 @@ export const connectWebSocket = () => {
     const routerState = useRouterState()
     const websocketStore = useWebsocketStore()
     // WebSocket连接
-    websocketStore.setWebsocket(new WebSocket(import.meta.env.VITE_WS_URL))
+    websocketStore.setWebsocket(new WebSocket(import.meta.env.VITE_WS_URL + "?Authorization=" + userState.token))
     const websocket: WebSocket = websocketStore.getWebsocket()!
     websocket.onopen = () => {
         if (userState.token) {

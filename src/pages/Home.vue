@@ -203,7 +203,7 @@ const tvSearchVal = reactive({title: ''})
 const picSearchVal = reactive({title: ''})
 const searchTextState = useSearchTextState()
 const enlargedImageUrl = ref<string | null>('')
-const imgPrefix = ref(import.meta.env.VITE_FRONT_URL)
+const imgPrefix = ref(import.meta.env.VITE_WEB_URL)
 const loadingPic = computed(() => {
 	return loadingPic8k.value || loadingPic4k.value
 })
