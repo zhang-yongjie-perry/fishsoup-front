@@ -53,11 +53,11 @@
                 </a-row>
             </a-col>
             <a-col :span="6">
-                <div style="border: 1px solid black;width: 100%;height: 200px;display: flex;justify-content: center;align-items: center;">
-                    <h1>hello world</h1>
+                <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
+                    <a-calendar :locale="locale" v-model:value="day" @panelChange="onPanelChange" :fullscreen="false" />
                 </div>
-                <div style="border: 1px solid black;width: 100%;height: 200px;display: flex;justify-content: center;align-items: center;">
-                    <h1>hello perry</h1>
+                <div style="border: 1px solid black;width: 100%;height: 90px;display: flex;justify-content: center;align-items: center;margin-top: 24px;">
+                    <h1>This is an advertising space</h1>
                 </div>
             </a-col>
         </a-row>
@@ -73,6 +73,14 @@ import { useUserInfo } from '@/store/user'
 import useRouterState from '@/store/router'
 import { ref } from 'vue'
 import useSearchTextState from '@/store/seach'
+import { Dayjs } from 'dayjs'
+import locale from 'ant-design-vue/es/date-picker/locale/zh_CN' // 仅用于日期组件的汉化
+// import zhCN from 'ant-design-vue/es/locale/zh_CN' // 用于 a-config-provider 内部组件的汉化
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+
+// 需要设置 dayjs 语言模式 cn/en
+dayjs.locale('cn')
 
 const { page, name } = defineProps(['page', 'name'])
 const userState = useUserInfo()
@@ -83,10 +91,15 @@ const loading = ref(false)
 const loadingMore = ref(false)
 const hasMore = ref(false)
 const searchTextState = useSearchTextState()
+const day = ref<Dayjs>()
 
 onMounted(() => {
     toGetCreationList(1, false)
 })
+
+const onPanelChange = (value: Dayjs, mode: string) => {
+    console.log(value, mode);
+};
 
 function toGetCreationList(pn: number | null, append: boolean) {
     let classifyVal = page === 'major' ? '1' : page === 'literature' ? '2' : '3'

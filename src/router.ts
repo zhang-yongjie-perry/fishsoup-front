@@ -11,12 +11,13 @@ import HotNews from '@/pages/hotNews/HotNews.vue'
 import Footsteps from '@/pages/footsteps/Footsteps.vue'
 import PersonalInfo from '@/pages/user/PersonalInfo.vue'
 import ChatRoom from '@/pages/user/ChatRoom.vue'
+import MovieNunu from '@/pages/movies/MovieNunu.vue'
 
 const routes = [
     {path: '/', component: Home, breadcrumbName: '首页'},
     {path: '/home', component: Home, breadcrumbName: '首页'},
     {path: '/login', component: Login, breadcrumbName: '登录'},
-    {path: '/movie/:mv_id', component: Movie, props: true, breadcrumbName: '影视播放'},
+    {path: '/movie/:mv_id', component: Movie, props: true, breadcrumbName: 'V1影视'},
     {path: '/knowledgeBase', component: KnowledgeBase, breadcrumbName: '知识库'},
     {path: '/myCreation', component: MyCreation, breadcrumbName: '我的'},
     {path: '/creation', component: Creation, breadcrumbName: '作品'},
@@ -26,6 +27,7 @@ const routes = [
     {path: '/footsteps', component: Footsteps, breadcrumbName: '足迹'},
     {path: '/personalInfo', component: PersonalInfo, breadcrumbName: '个人信息'},
     {path: '/chatRoom', component: ChatRoom, breadcrumbName: '聊天室'},
+    {path: '/movieNunu/:mv_id', component: MovieNunu, props: true, breadcrumbName: 'V2影视'},
 ]
 
 const router = createRouter({

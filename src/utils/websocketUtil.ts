@@ -43,7 +43,11 @@ export const chatOnline = () => {
     const userState = useUserInfo()
     const websocket = useWebsocketStore().getWebsocket()
     useWebsocketStore().setOnlineStatus(1)
-    websocket?.send(userState.token)
+    if (websocket == null) {
+        connectWebSocket()
+        return
+    }
+    websocket.send(userState.token)
 }
 
 export const chatOffline = () => {

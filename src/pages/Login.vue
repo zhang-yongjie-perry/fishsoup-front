@@ -119,7 +119,7 @@ function toRegister() {
                     return
                 }
                 
-                login(userInfo).then(res => {
+                login(userInfo, '').then(res => {
                     if (res.data.code !== '0') {
                         message.warning(res.data.msg ? res.data.msg : '登录失败, 请联系管理员', 1)    
                         loading.value = false

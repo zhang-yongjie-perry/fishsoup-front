@@ -1,0 +1,2 @@
+function decryptDict(e){var t={};function n(e){if(Array.isArray(e))return e.map(function(e){return n(e)});else if("object"==typeof e)return decryptDict(e);else{var c=e.split("").map(function(e){return String.fromCharCode(e.charCodeAt(0)-1)}).join("");try{return JSON.parse(c)}catch(e){return c}}}for(var c in e){var r=c.split("").map(function(e){return String.fromCharCode(e.charCodeAt(0)-1)}).join("");t[r]=n(e[c])}return t};
+export default decryptDict;

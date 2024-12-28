@@ -101,11 +101,67 @@
 				</a-col>
 			</a-row>
 		</a-card>
+		<a-card :loading="loadingTvV2" style="margin-top: 24px">
+			<template #title>
+				<a-row>
+					<a-col :xl="4" :xs="24">
+						<span>V2影视</span>
+					</a-col>
+					<a-col id="col-mv-search" :xl="10" :xs="20">
+						<MyInputSearch
+							placeholder="请输入查询内容"
+							action1="本地搜索"
+							action2="网络搜索"
+							:allowClear="true"
+							:action2Spin="action2SpinV2"
+							:value="tvSearchValV2.title"
+							@update:searchValue="toUpdateSearchValV2"
+							@update:toLocalSearch="toFindTvMoviesV2(1, 12)"
+							@update:toNetworkSearch="toNetworkSearchMoviesV2"
+						>
+						</MyInputSearch>
+					</a-col>
+				</a-row>
+			</template>
+			<!-- <template #extra>
+				<a v-antishake href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
+			</template> -->
+			<a-row :gutter="32">
+				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvsV2">
+					<a-card :bordered="false" @click="router.push('/movieNunu/' + tv.id)"
+					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
+						<template #cover>
+							<a-image class="img-mv-preview"
+								:alt="tv.synopsis" 
+								:src="tv.imgUrl" 
+								:preview="false"
+								fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3PTWBSGcbGzM6GCKqlIBRV0dHRJFarQ0eUT8LH4BnRU0NHR0UEFVdIlFRV7TzRksomPY8uykTk/zewQfKw/9znv4yvJynLv4uLiV2dBoDiBf4qP3/ARuCRABEFAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghgg0Aj8i0JO4OzsrPv69Wv+hi2qPHr0qNvf39+iI97soRIh4f3z58/u7du3SXX7Xt7Z2enevHmzfQe+oSN2apSAPj09TSrb+XKI/f379+08+A0cNRE2ANkupk+ACNPvkSPcAAEibACyXUyfABGm3yNHuAECRNgAZLuYPgEirKlHu7u7XdyytGwHAd8jjNyng4OD7vnz51dbPT8/7z58+NB9+/bt6jU/TI+AGWHEnrx48eJ/EsSmHzx40L18+fLyzxF3ZVMjEyDCiEDjMYZZS5wiPXnyZFbJaxMhQIQRGzHvWR7XCyOCXsOmiDAi1HmPMMQjDpbpEiDCiL358eNHurW/5SnWdIBbXiDCiA38/Pnzrce2YyZ4//59F3ePLNMl4PbpiL2J0L979+7yDtHDhw8vtzzvdGnEXdvUigSIsCLAWavHp/+qM0BcXMd/q25n1vF57TYBp0a3mUzilePj4+7k5KSLb6gt6ydAhPUzXnoPR0dHl79WGTNCfBnn1uvSCJdegQhLI1vvCk+fPu2ePXt2tZOYEV6/fn31dz+shwAR1sP1cqvLntbEN9MxA9xcYjsxS1jWR4AIa2Ibzx0tc44fYX/16lV6NDFLXH+YL32jwiACRBiEbf5KcXoTIsQSpzXx4N28Ja4BQoK7rgXiydbHjx/P25TaQAJEGAguWy0+2Q8PD6/Ki4R8EVl+bzBOnZY95fq9rj9zAkTI2SxdidBHqG9+skdw43borCXO/ZcJdraPWdv22uIEiLA4q7nvvCug8WTqzQveOH26fodo7g6uFe/a17W3+nFBAkRYENRdb1vkkz1CH9cPsVy/jrhr27PqMYvENYNlHAIesRiBYwRy0V+8iXP8+/fvX11Mr7L7ECueb/r48eMqm7FuI2BGWDEG8cm+7G3NEOfmdcTQw4h9/55lhm7DekRYKQPZF2ArbXTAyu4kDYB2YxUzwg0gi/41ztHnfQG26HbGel/crVrm7tNY+/1btkOEAZ2M05r4FB7r9GbAIdxaZYrHdOsgJ/wCEQY0J74TmOKnbxxT9n3FgGGWWsVdowHtjt9Nnvf7yQM2aZU/TIAIAxrw6dOnAWtZZcoEnBpNuTuObWMEiLAx1HY0ZQJEmHJ3HNvGCBBhY6jtaMoEiJB0Z29vL6ls58vxPcO8/zfrdo5qvKO+d3Fx8Wu8zf1dW4p/cPzLly/dtv9Ts/EbcvGAHhHyfBIhZ6NSiIBTo0LNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiEC/wGgKKC4YMA4TAAAAABJRU5ErkJggg=="
+							/>
+						</template>
+						<a-card-meta :title="tv.title" :description="tv.synopsis">
+						</a-card-meta>
+					</a-card>							
+				</a-col>
+			</a-row>
+			<a-row style="margin: 12px;">
+				<a-col :span="24">
+					<a-pagination v-model:current="currentPageTv" 
+						:total="totalTvV2" 
+						:defaultPageSize="12"
+						:pageSize="pageSizeTv"
+						:pageSizeOptions="['12', '24', '48', '96']"
+						showQuickJumper
+						@change="toFindTvMoviesV2"
+						:show-total="(totalTvV2: number) => `总计 ${totalTvV2} 条 `"
+					/>
+				</a-col>
+			</a-row>
+		</a-card>
 		<a-card :loading="loadingTv" style="margin-top: 24px">
 			<template #title>
 				<a-row>
 					<a-col :xl="4" :xs="24">
-						<span>精彩影视</span>
+						<span>V1影视</span>
 					</a-col>
 					<a-col id="col-mv-search" :xl="10" :xs="20">
 						<MyInputSearch
@@ -123,9 +179,9 @@
 					</a-col>
 				</a-row>
 			</template>
-			<template #extra>
+			<!-- <template #extra>
 				<a v-antishake href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
-			</template>
+			</template> -->
 			<a-row :gutter="32">
 				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvs">
 					<a-card :bordered="false" @click="router.push('/movie/' + tv.id)"
@@ -158,22 +214,18 @@
 			</a-row>
 		</a-card>
 	</Container>
-	<transition name="fade">
-		<div v-if="enlargedImageUrl" class="overlay" @click="closeImage">
-			<img :src="enlargedImageUrl" class="enlarged" />
-		</div>
-	</transition>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, reactive, computed } from 'vue'
 import type { TvMovie } from '@/interfaces/Entity'
 import { useRouter } from 'vue-router'
 import Container from '@/components/Container.vue'
-import { pageTvMovies, networkSearchMovies } from '@/api/movie'
+import { pageTvMovies, networkSearchMovies, networkSearchMoviesV2 } from '@/api/movie'
 import { listPics8k, pagePics4k, searchPics } from '@/api/picture'
 import { successAlert, warningAlert } from '@/utils/AlertUtil'
 import useSearchTextState from '@/store/seach'
 import { SyncOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons-vue'
+import useUserInfo from '@/store/user'
 
 const novelSites = ref([
 	{url: 'https://5000yan.com/', poster: '/novelPoster/guoxue.jpg', title: '国学5000言'},
@@ -184,25 +236,32 @@ const novelSites = ref([
 	// {url: 'https://www.jucewu.com/', poster: '/novelPoster/mianfei.jpg', title: '免费小说'},
 	{url: 'https://www.mianfeixiaoshuoyueduwang.com/', poster: '/novelPoster/mianfeiyuedu.jpg', title: '免费小说阅读网'},
 ])
+const userState = useUserInfo()
 const spinPic = ref(false)
 const action2Spin = ref(false)
+const action2SpinV2 = ref(false)
 const tvs = reactive<TvMovie[]>([])
+const tvsV2 = reactive<TvMovie[]>([])
 const pics8k = ref<any[]>([])
 const pictures = ref<any[]>([])
 const router = useRouter()
 const loadingTv = ref(true)
+const loadingTvV2 = ref(true)
 const currentPagePic = ref<number>(1)
 const pageSizePic = ref<number>(6)
 const totalPic = ref<number>(0)
 const currentPageTv = ref<number>(1)
 const pageSizeTv = ref<number>(12)
 const totalTv = ref<number>(0)
+const currentPageTvV2 = ref<number>(1)
+const pageSizeTvV2 = ref<number>(12)
+const totalTvV2 = ref<number>(0)
 const loadingPic8k = ref(true)
 const loadingPic4k = ref(true)
-const tvSearchVal = reactive({title: ''})
+const tvSearchVal = reactive({title: '', site: 'paopao'})
+const tvSearchValV2 = reactive({title: '', site: 'nunu'})
 const picSearchVal = reactive({title: ''})
 const searchTextState = useSearchTextState()
-const enlargedImageUrl = ref<string | null>('')
 const imgPrefix = ref(import.meta.env.VITE_WEB_URL)
 const loadingPic = computed(() => {
 	return loadingPic8k.value || loadingPic4k.value
@@ -212,12 +271,20 @@ function toSearchPics(value: string) {
 	picSearchVal.title = value
 }
 
+function toUpdateSearchValV2(value: string) {
+	tvSearchValV2.title = value
+}
+
 function toUpdateSearchVal(value: string) {
 	tvSearchVal.title = value
 }
 
 onMounted(async () => {
+	if (!userState.token) {
+		return
+	}
 	toFindTvMovies(1, 12)
+	toFindTvMoviesV2(1, 12)
 	initPic8k()
 	initPic4k(1, 6)
 })
@@ -251,6 +318,25 @@ function initPic4k(pageNumber: number, pageSize: number) {
 	})
 }
 
+function toNetworkSearchMoviesV2() {
+	if (!tvSearchValV2.title) {
+		warningAlert("请输入影片名称")
+		return
+	}
+	action2SpinV2.value = true
+	successAlert('影片搜索中, 请稍后')
+	networkSearchMoviesV2(tvSearchValV2.title).then(res => {
+		if (res.data.code === '1') {
+			warningAlert(res.data.msg)
+			action2SpinV2.value = false
+			return
+		}
+		toFindTvMoviesV2(1, 12)
+		successAlert('搜索完成!')
+		action2SpinV2.value = false
+	})
+}
+
 function toNetworkSearchMovies() {
 	if (!tvSearchVal.title) {
 		warningAlert("请输入影片名称")
@@ -270,11 +356,28 @@ function toNetworkSearchMovies() {
 	})
 }
 
+function toFindTvMoviesV2(pageNumber: number, pageSize: number) {
+	currentPageTvV2.value = pageNumber ? pageNumber : currentPageTvV2.value
+	pageSizeTvV2.value = pageSize ? pageSize : pageSizeTvV2.value
+	loadingTvV2.value = true
+	pageTvMovies(tvSearchValV2.title ? tvSearchValV2 
+		: {title: searchTextState.searchText, site: 'nunu'}, pageNumber, pageSize).then(res => {
+		if (res.data.code === '1') {
+			warningAlert(res.data.msg)
+			return
+		}
+		tvsV2.splice(0)
+		tvsV2.push(...res.data.records)
+		totalTvV2.value = res.data.total
+		loadingTvV2.value = false
+	})
+}
+
 function toFindTvMovies(pageNumber: number, pageSize: number) {
 	currentPageTv.value = pageNumber ? pageNumber : currentPageTv.value
 	pageSizeTv.value = pageSize ? pageSize : pageSizeTv.value
 	loadingTv.value = true
-	pageTvMovies(tvSearchVal.title ? tvSearchVal : {title: searchTextState.searchText}, pageNumber, pageSize).then(res => {
+	pageTvMovies(tvSearchVal.title ? tvSearchVal : {title: searchTextState.searchText, site: 'paopao'}, pageNumber, pageSize).then(res => {
 		if (res.data.code === '1') {
 			warningAlert(res.data.msg)
 			return
@@ -289,11 +392,7 @@ function toFindTvMovies(pageNumber: number, pageSize: number) {
 function toSearch() {
 	initPic4k(1, 6)
 	toFindTvMovies(1, 12)
-}
-
-
-function closeImage() {
-	enlargedImageUrl.value = null
+	toFindTvMoviesV2(1, 12)
 }
 
 function refreshPics() {

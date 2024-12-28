@@ -44,7 +44,11 @@
                     <a-card :bordered="false" @click="router.push('/movie/' + tv.correlationId)"
                     :style="{'margin-top': i > 5 ? '25px' : '0px' }" class="watching">
                         <template #cover>
-                            <img :alt="tv.episode" :src="tv.imageUrl" @error="() => tv.imageUrl = '/imgFailure.jpg'" />
+                            <img class="img-mv-preview" 
+                            :alt="tv.episode" 
+                            :src="tv.imageUrl" 
+                            @error="() => tv.imageUrl = '/imgFailure.jpg'" 
+                            />
                         </template>
                         <a-card-meta :title="tv.title">
                             <template #description>

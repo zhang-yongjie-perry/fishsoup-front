@@ -11,3 +11,11 @@ export function getTvMovieById(id: string) {
 export function networkSearchMovies(title: string) {
     return axios.get(`/web/movie/search/${title}`)
 }
+
+export function getM3u8Resource(sid: string) {
+    return axios.get(`/das/crawl/m3u8/nunu/${sid}`)
+}
+
+export function networkSearchMoviesV2(title: string) {
+    return axios.get(`/das/crawl/movie/nunu/${title}`)
+}

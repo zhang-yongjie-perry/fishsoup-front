@@ -28,7 +28,9 @@ const whiteList = ['/', '/login']
 router.beforeEach((to, from, next) => {
     if (!whiteList.includes(to.path) && !userState.token) {
         warningAlert('您尚未登录, 请先登录')
-        return '/login'
+        router.push("/login")
+        return
+        // return '/login'
     }
     routerState.from = from.path
     routerState.to = to.path
