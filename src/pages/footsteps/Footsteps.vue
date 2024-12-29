@@ -41,7 +41,9 @@
         <a-card title="最近观看" style="margin-top: 12px">
             <a-row :gutter="32" v-if="tvs.length > 0">
                 <a-col :xl="4" :xs="16" v-for="(tv, i) in tvs">
-                    <a-card :bordered="false" @click="router.push('/movie/' + tv.correlationId)"
+                    <a-card :bordered="false" @click="tv.site === 'paopao' 
+                        ? router.push('/movie/' + tv.correlationId) : tv.site === 'nunu'
+                        ? router.push('/movieNunu/' + tv.correlationId) : router.push('/movie/' + tv.correlationId)"
                     :style="{'margin-top': i > 5 ? '25px' : '0px' }" class="watching">
                         <template #cover>
                             <img class="img-mv-preview" 

@@ -136,7 +136,7 @@ let today = new Date()
 let today_format = today.getFullYear() + '-' + (today.getMonth().toString().length == 1 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1)
     + '-' + (today.getDate().toString().length == 1 ? '0' + today.getDate() : today.getDate()) 
 function toListHotNews() {
-    listHotNews({time: today_format, title: searchTextState.getSearchText()}, 10).then(res => {
+    listHotNews({time: today_format, title: searchTextState.getSearchText(), site: "ChinaNews", type: "1"}, 1, 10).then(res => {
     if (res.data.code === '1') {
             warningAlert(res.data.msg)
             return

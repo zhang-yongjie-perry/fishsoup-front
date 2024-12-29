@@ -26,6 +26,6 @@ export function getCreation(value: string) {
     return axios.get(`/web/creation/${value}`);
 }
 
-export function listHotNews(value: any, limit: number) {
-    return axios.post(`/web/hotNews/list/${limit}`, value)
+export function listHotNews(value: any, page: number, limit: number) {
+    return axios.post(`/web/hotNews/list/${page}/${limit}`, value)
 }

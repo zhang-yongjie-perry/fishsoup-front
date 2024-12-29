@@ -26,7 +26,7 @@
                     </template>
                     <a-button v-antishake class="button-play" v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)">
                         <span v-if="pmv.m3u8Url == m3u8Sid">
-                            <a-image :preview="false" style="width: 45px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
+                            <a-image :preview="false" style="width: 43px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
                         </span>
                         <span v-else>{{ pmv.episode }}</span>
                     </a-button>
@@ -47,13 +47,14 @@ import { recordPlayInfo } from '@/api/footstep'
 import { warningAlert } from '@/utils/AlertUtil'
 import type { TvMovie, PlayOrg, PlayMovie } from '@/interfaces/Entity'
 
+const saved = ref(false)
 const loading = ref(true)
 const { mv_id } = defineProps(['mv_id'])
 const playerRef = ref<Player | null>()
 const pl = ref()
 const mvUrl = ref('')
 const m3u8Sid = ref('')
-const startTime = ref(20)
+const startTime = ref(0)
 const mv = reactive<TvMovie>({
     id: '',
     title: '',
@@ -82,6 +83,8 @@ const playList = computed(() => {
 })
 
 onMounted(() => {
+    saved.value = false
+    window.addEventListener('beforeunload', e => beforeunloadHandler(e))
     getTvMovieById(mv_id).then(async res => {
         if (res.data.code == '1') {
 			warningAlert(res.data.msg)
@@ -113,10 +116,10 @@ onMounted(() => {
         }
         key.value = res.data.hisPlayOrgName ? res.data.hisPlayOrgName : urlList.source[0]
         episode.value = res.data.hisEpisode ? res.data.hisEpisode : urlList.url_list[0][0].title
-        startTime.value = res.data.startTime > 0 ? res.data.startTime : 20
+        startTime.value = res.data.startTime - 2 > 0 ? res.data.startTime - 2 : 0
         if (res.data.hisM3u8Url) {
             m3u8Sid.value = res.data.hisM3u8Url
-            let m3u8Url = await getM3u8Resource(urlList.url_list[0][0].sid)
+            let m3u8Url = await getM3u8Resource(res.data.hisM3u8Url)
             mvUrl.value = m3u8Url.data
             initPlayer()
             loading.value = false    
@@ -173,9 +176,6 @@ function onTabChange(value: string) {
 }
 
 async function onEpisodeChange(episodeVal: string, m3u8Url: string) {
-    if (episode.value === episodeVal) {
-        return
-    }
     if (!playerRef.value) {
         return
     }
@@ -189,15 +189,33 @@ async function onEpisodeChange(episodeVal: string, m3u8Url: string) {
 
 onBeforeUnmount(() => {
     let currentTime = playerRef.value ? playerRef.value.currentTime : 0
-    recordPlayInfo({correlationId: mv_id, type: '1', playOrgName: key.value, episode: episode.value, m3u8Url: m3u8Sid.value, currentTime: currentTime})
+    recordPlayInfo({correlationId: mv_id, type: '1', playOrgName: key.value, episode: episode.value, m3u8Url: m3u8Sid.value, startTime: currentTime})
         .finally(() => {
             if (!playerRef.value) {
                 return
             }
             playerRef.value.destroy()
             playerRef.value = null
+            saved.value = true
         })
 })
+
+// 关闭浏览器之前触发
+function beforeunloadHandler(e: any) {
+    if (saved.value) {
+        return
+    }
+    let currentTime = playerRef.value ? playerRef.value.currentTime : 0
+    recordPlayInfo({correlationId: mv_id, type: '1', playOrgName: key.value, episode: episode.value, m3u8Url: m3u8Sid.value, startTime: currentTime})
+        .finally(() => {
+            if (!playerRef.value) {
+                return
+            }
+            playerRef.value.destroy()
+            playerRef.value = null
+            saved.value = true
+        })
+}
 </script>
 
 <style lang="scss">

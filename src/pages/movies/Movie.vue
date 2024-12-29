@@ -26,7 +26,7 @@
                     </template>
                     <a-button v-antishake class="button-play" v-for="pmv in playList" @click="onEpisodeChange(pmv.episode, pmv.m3u8Url)">
                         <span v-if="pmv.m3u8Url === mvUrl">
-                            <a-image :preview="false" style="width: 45px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
+                            <a-image :preview="false" style="width: 43px;height: 16px;" src="https://img.alicdn.com/imgextra/i3/O1CN01rwR3E51j4lFNN4VRd_!!6000000004495-1-tps-72-72.gif" />
                         </span>
                         <span v-else>{{ pmv.episode }}</span>
                     </a-button>
@@ -47,13 +47,13 @@ import { recordPlayInfo } from '@/api/footstep'
 import { warningAlert } from '@/utils/AlertUtil'
 import type { TvMovie, PlayOrg } from '@/interfaces/Entity'
 
-
+const saved = ref(false)
 const loading = ref(true)
 const { mv_id } = defineProps(['mv_id'])
 const playerRef = ref<Player | null>()
 const pl = ref()
 const mvUrl = ref('')
-const startTime = ref(20)
+const startTime = ref(0)
 const mv = reactive<TvMovie>({
     id: '',
     title: '',
@@ -82,6 +82,7 @@ const playList = computed(() => {
 })
 
 onMounted(() => {
+    window.addEventListener('beforeunload', e => beforeunloadHandler(e))
     getTvMovieById(mv_id).then(res => {
         if (res.data.code == '1') {
 			warningAlert(res.data.msg)
@@ -94,7 +95,7 @@ onMounted(() => {
         key.value = res.data.hisPlayOrgName ? res.data.hisPlayOrgName : res.data.playOrgs[0].orgName
         episode.value = res.data.hisEpisode ? res.data.hisEpisode : res.data.playOrgs[0].playList[0].episode
         mvUrl.value = res.data.hisM3u8Url ? res.data.hisM3u8Url : res.data.playOrgs[0].playList[0].m3u8Url
-        startTime.value = res.data.startTime > 0 ? res.data.startTime : 20
+        startTime.value = res.data.startTime - 2 > 0 ? res.data.startTime - 2 : 0
         initPlayer()
         loading.value = false
     })
@@ -143,9 +144,6 @@ function onTabChange(value: string) {
 }
 
 async function onEpisodeChange(episodeVal: string, m3u8Url: string) {
-    if (episode.value === episodeVal) {
-        return
-    }
     if (!playerRef.value) {
         return
     }
@@ -164,8 +162,26 @@ onBeforeUnmount(() => {
             }
             playerRef.value.destroy()
             playerRef.value = null
+            saved.value = true
         })
 })
+
+// 关闭浏览器之前触发
+function beforeunloadHandler(e: any) {
+    if (saved.value) {
+        return
+    }
+    let currentTime = playerRef.value ? playerRef.value.currentTime : 0
+    recordPlayInfo({correlationId: mv_id, type: '1', playOrgName: key.value, episode: episode.value, m3u8Url: mvUrl.value, startTime: currentTime})
+        .finally(() => {
+            if (!playerRef.value) {
+                return
+            }
+            playerRef.value.destroy()
+            playerRef.value = null
+            saved.value = true
+        })
+}
 </script>
 
 <style lang="scss">
