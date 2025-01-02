@@ -4,7 +4,7 @@
             <template #title>
                 <span>要点新闻</span>
 			</template>
-            <a-list :grid="{ gutter: 120, column: 2 }" :data-source="featuredNews" :locale="{ emptyText: '暂无数据' }">
+            <a-list :grid="{ gutter: 120, xs: 1, sm: 2, md: 2 , lg: 2, xl: 2, xxl: 2, xxxl: 2 }" :data-source="featuredNews" :locale="{ emptyText: '暂无数据' }">
                 <template #loadMore>
                     <div v-if="featuredNewsHasMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                         <a-spin v-if="featuredNewsLoadingMore" />
@@ -16,10 +16,10 @@
                         <a-list-item-meta>
                             <template #title>
                                 <a-row>
-                                    <a-col :xl="19" :xs="19">
+                                    <a-col :sm="16" :xs="18">
                                         <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                     </a-col>
-                                    <a-col :xl="5" :xs="5">
+                                    <a-col :sm="8" :xs="6">
                                         <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                     </a-col>
                                 </a-row>
@@ -33,7 +33,7 @@
             <template #title>
                 <span>中外热榜</span>
 			</template>
-            <a-list :grid="{ gutter: 120, column: 2 }" :data-source="hotList" :locale="{ emptyText: '暂无数据' }">
+            <a-list :grid="{ gutter: 120, xs: 1, sm: 2, md: 2 , lg: 2, xl: 2, xxl: 2, xxxl: 2 }" :data-source="hotList" :locale="{ emptyText: '暂无数据' }">
                 <template #loadMore>
                     <div v-if="hotListHasMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                         <a-spin v-if="hotListLoadingMore" />
@@ -45,10 +45,10 @@
                         <a-list-item-meta>
                             <template #title>
                                 <a-row>
-                                    <a-col :xl="19" :xs="19">
+                                    <a-col :xl="16" :xs="18">
                                         <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                     </a-col>
-                                    <a-col :xl="5" :xs="5">
+                                    <a-col :xl="8" :xs="6">
                                         <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                     </a-col>
                                 </a-row>
@@ -62,7 +62,7 @@
             <template #title>
                 <span>前沿科技</span>
 			</template>
-            <a-list :grid="{ gutter: 120, column: 2 }" :data-source="frontTech" :locale="{ emptyText: '暂无数据' }">
+            <a-list :grid="{ gutter: 120, xs: 1, sm: 2, md: 2 , lg: 2, xl: 2, xxl: 2, xxxl: 2 }" :data-source="frontTech" :locale="{ emptyText: '暂无数据' }">
                 <template #loadMore>
                     <div v-if="frontTechHasMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                         <a-spin v-if="frontTechLoadingMore" />
@@ -74,10 +74,10 @@
                         <a-list-item-meta>
                             <template #title>
                                 <a-row>
-                                    <a-col :xl="19" :xs="19">
+                                    <a-col :xl="16" :xs="18">
                                         <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                     </a-col>
-                                    <a-col :xl="5" :xs="5">
+                                    <a-col :xl="8" :xs="6">
                                         <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                     </a-col>
                                 </a-row>
@@ -91,7 +91,7 @@
             <template #title>
                 <span>焦点热娱</span>
 			</template>
-            <a-list :grid="{ gutter: 120, column: 2 }" :data-source="focusHotEntertainment" :locale="{ emptyText: '暂无数据' }">
+            <a-list :grid="{ gutter: 120, xs: 1, sm: 2, md: 2 , lg: 2, xl: 2, xxl: 2, xxxl: 2 }" :data-source="focusHotEntertainment" :locale="{ emptyText: '暂无数据' }">
                 <template #loadMore>
                     <div v-if="focusHotEntertainmentHasMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                         <a-spin v-if="focusHotEntertainmentLoadingMore" />
@@ -103,10 +103,10 @@
                         <a-list-item-meta>
                             <template #title>
                                 <a-row>
-                                    <a-col :xl="19" :xs="19">
+                                    <a-col :xl="16" :xs="18">
                                         <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                     </a-col>
-                                    <a-col :xl="5" :xs="5">
+                                    <a-col :xl="8" :xs="6">
                                         <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                     </a-col>
                                 </a-row>

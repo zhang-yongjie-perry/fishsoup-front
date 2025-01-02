@@ -24,10 +24,10 @@
                                     <a-list-item-meta :description="item.desc">
                                         <template #title>
                                             <a-row>
-                                                <a-col :xl="19" :xs="19">
+                                                <a-col :xl="19" :xs="18">
                                                     <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                                 </a-col>
-                                                <a-col :xl="5" :xs="5">
+                                                <a-col :xl="5" :xs="6">
                                                     <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>

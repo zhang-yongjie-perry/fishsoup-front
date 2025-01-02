@@ -1,7 +1,7 @@
 <template>
     <Container @update:to-search="toSearch">
         <a-row class="content">
-            <a-col :span="18">
+            <a-col :xs="24" :xl="18">
                 <a-row>
                     <a-col :span="24">
                         <h1 style="color: #009fe9;">{{ name }}</h1>
@@ -10,7 +10,7 @@
                 <a-row style="width: 95%;">
                     <a-col :span="24">
                         <hr>
-                        <a-list 
+                        <a-list
                             item-layout="horizontal" 
                             :data-source="dataSource" 
                             :locale="{emptyText: '暂无数据'}"
@@ -27,7 +27,7 @@
                                     <a-list-item-meta :description="item.summary">
                                         <template #title>
                                             <a-row>
-                                                <a-col :span="22">
+                                                <a-col :xl="22" :xs="16">
                                                     <router-link class="title-desc" :to="{path: `/creation/${item.id}`}">
                                                         <span>{{ item.title }}</span>
                                                     </router-link>
@@ -40,7 +40,7 @@
                                                         <span>[作者：{{ item.author }}]</span>
                                                     </span>
                                                 </a-col>
-                                                <a-col :span="2">
+                                                <a-col :xl="2" :xs="8">
                                                     <div style="width: 100%;text-align: right;">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>
@@ -52,12 +52,20 @@
                     </a-col>
                 </a-row>
             </a-col>
-            <a-col :span="6">
-                <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
-                    <a-calendar :locale="locale" v-model:value="day" @panelChange="onPanelChange" :fullscreen="false" />
-                </div>
-                <div style="border: 1px solid black;width: 100%;height: 90px;display: flex;justify-content: center;align-items: center;margin-top: 24px;">
-                    <h1>This is an advertising space</h1>
+            <a-col class="appendage" :xs="0" :xl="6">
+                <div style="position: fixed; top: 25%;left: 75%; right: 2%;">
+                    <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
+                        <a-calendar 
+                            :locale="locale"
+                            :fullscreen="false"
+                            v-model:value="day"
+                            @panelChange="onPanelChange"
+                            @select="onSelect"
+                        />
+                    </div>
+                    <div style="border: 1px solid black;width: 100%;height: 90px;display: flex;justify-content: center;align-items: center;margin-top: 24px;">
+                        <h1>This is an advertising space</h1>
+                    </div>
                 </div>
             </a-col>
         </a-row>
@@ -92,6 +100,8 @@ const loadingMore = ref(false)
 const hasMore = ref(false)
 const searchTextState = useSearchTextState()
 const day = ref<Dayjs>()
+const selectedDayValue = ref<Dayjs>();
+
 
 onMounted(() => {
     toGetCreationList(1, false)
@@ -99,7 +109,13 @@ onMounted(() => {
 
 const onPanelChange = (value: Dayjs, mode: string) => {
     console.log(value, mode);
-};
+}
+
+const onSelect = (value: Dayjs) => {
+    selectedDayValue.value = value
+    console.log('selectedDayValue.value');
+    
+}
 
 function toGetCreationList(pn: number | null, append: boolean) {
     let classifyVal = page === 'major' ? '1' : page === 'literature' ? '2' : '3'
@@ -139,6 +155,18 @@ function toSearch(value: string) {
     .title-desc {
         padding: 0px;
         color: black
+    }
+}
+
+@media (max-width: 1200px) {
+    .appendage {
+        display: none;
+    }
+}
+
+@media (min-width: 1200px) {
+    .appendage {
+        display: inline-block;
     }
 }
 </style>

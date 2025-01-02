@@ -2,10 +2,19 @@
     <a-layout class="fish-home">
         <a-layout-header class="fish-header">
             <a-row>
-                <a-col :xl="{span: 9, pull: 0}" :xs="{span: 12, pull: 1}">
+                <a-col :xs="{span: 24, pull: 2}" :sm="{span: 12, pull: 1}" :md="{span: 9, pull: 1}" 
+                :lg="{span: 9, pull: 0}" :xl="{span: 9, pull: 0}">
                     <ul class="left-entry">
                         <li v-for="link in links" class="entry-element">
-                            <a-badge v-if="link.url === '/chatRoom'" :count="useWebsocketStore().getCount()">
+                            <a-badge v-if="link.url === '/chatRoom'" :count="useWebsocketStore().getCount()" style="display: inline;">
+                                <router-link :to="link.url" style="background-color: transparent;">
+                                    <span class="entry-title" :style="{
+                                        'font-weight': routerState.to === link.url ? 'bold' : 'normal',
+                                        'text-decoration': routerState.to === link.url ? 'underline' : 'none',
+                                    }">{{ link.name }}</span>
+                                </router-link>
+                            </a-badge>
+                            <a-badge v-else style="display: inline;">
                                 <router-link :to="link.url" style="background-color: transparent;">
                                     <span class="entry-title" :style="{
                                         'font-weight': routerState.to === link.url ? 'bold' : 'normal',
@@ -13,16 +22,11 @@
                                     }">{{ link.name }}</span>
                                 </router-link>
                             </a-badge>
-                            <router-link v-else :to="link.url" style="background-color: transparent;">
-                                <span class="entry-title" :style="{
-                                    'font-weight': routerState.to === link.url ? 'bold' : 'normal',
-                                    'text-decoration': routerState.to === link.url ? 'underline' : 'none'
-                                }">{{ link.name }}</span>
-                            </router-link>
                         </li>
                     </ul>
                 </a-col>
-                <a-col :xl="{span: 8, pull: 0}" :xs="{span: 12, pull: 1}">
+                <a-col :xs="{span: 12, pull: 0}" :sm="{span: 10, pull: 1}" :md="{span: 12, push: 1}" 
+                :lg="{span: 12, push: 1}" :xl="{span: 8, pull: 1}">
                     <a-input-search
                         v-model:value="searchRef"
                         :allowClear="true"
@@ -33,14 +37,16 @@
                         </template>
                     </a-input-search>
                 </a-col>
-                <a-col :xl="{span: 1, push: 1}" :xs="{span: 3, push: 1}">
+                <a-col :xs="{span: 4, push: 1}" :sm="{span: 4, push: 1}" :md="{span: 4, push: 1}" 
+                :lg="{span: 4, push: 1}" :xl="{span: 2, push: 2}">
                     <div class="go-back" @click="goBack()">返回</div>
                 </a-col>
-                <a-col :xl="{span: 5, push: 1}" :xs="{span: 20, push: 0}">
+                <a-col :xs="{span: 8, pull: 1}" :sm="{span: 20, push: 0}" :md="{span: 20, push: 0}" 
+                :lg="{span: 20, push: 0}" :xl="{span: 5, push: 0}">
                     <ul class="right-entry">
                         <li>
                             <span v-if="userStore.loginName" class="entry-username">
-                                您好, 
+                                <span id="hello">您好,</span> 
                                 <a-dropdown placement="bottom">
                                     <a class="ant-dropdown-link" @click.prevent style="background-color: transparent;">
                                         <span class="entry-username">{{ userStore.loginName }}</span>
@@ -58,7 +64,7 @@
                             </span>
                             <span v-else class="entry-username">"游客"</span>
                         </li>
-                        <li style="margin-left: 20px;">
+                        <li id="login">
                             <div style="display: inline-block;">
                                 <span v-if="!userStore.loginName" class="entry-username" @click="toLogin()">登录</span>
                                 <a-popconfirm v-else class="entry-username"
@@ -107,6 +113,7 @@ const links = ref([
 	{ name: '我的', url: '/myCreation' },
 	{ name: '联系', url: '/chatRoom' },
 	{ name: '足迹', url: '/footsteps' },
+	{ name: '备忘录', url: '/memo' },
 ])
 
 const emits = defineEmits(['update:toSearch'])
@@ -152,7 +159,19 @@ function goBack() {
 </script>
 
 <style lang="scss">
-@media (max-width: 389px) {
+@media (max-width: 576px) {
+    #hello {
+        display: none;
+    }
+    #login {
+        margin-left: 15px;
+    }
+    .ant-popover-buttons button {
+        margin-left: 3px;
+    }
+    .ant-popover-message-title {
+        width: 110px;
+    }
     .ant-layout-header{
         padding: 0;
         line-height: 10px;
@@ -164,7 +183,7 @@ function goBack() {
         background-image: url('/header-back.png');
     
         .ant-input-group-wrapper {
-            margin-top: 16px;
+            margin-left: 24px;
             opacity: 0.85;
         }
 
@@ -205,14 +224,14 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 3px;
+                margin-left: 24px;
             }
         }
     
         .go-back {
             display: inline-block;
-            margin-top: 16px;
-            margin-left: 13px;
+            margin-top: 12px;
+            margin-left: 24px;
             color: #fff;
             font-size: x-small;
             cursor: pointer;
@@ -220,7 +239,7 @@ function goBack() {
     
         .right-entry {
             float: right;
-            margin-top: 16px;
+            margin-top: 12px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
@@ -257,7 +276,10 @@ function goBack() {
 }
 
 
-@media (min-width: 390px) and (max-width: 647px) {
+@media (min-width: 576px) and (max-width: 768px) {
+    #login {
+        margin-left: 24px;
+    }
     .ant-layout-header{
         padding: 0;
         line-height: 10px;
@@ -270,6 +292,7 @@ function goBack() {
     
         .ant-input-group-wrapper {
             margin-top: 16px;
+            margin-left: 24px;
             opacity: 0.85;
         }
 
@@ -292,12 +315,12 @@ function goBack() {
         }
 
         .ant-input {
-            font-size: small;
+            font-size: 12px;
             border: 0px;
         }
 
         .ant-btn {
-            font-size: small;
+            font-size: 12px;
             border: 0px;
             margin-left: 0px
         }
@@ -310,22 +333,21 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 3px;
+                margin-left: 10px;
             }
         }
     
         .go-back {
             display: inline-block;
-            margin-top: 16px;
-            margin-left: 13px;
+            margin-top: 12px;
             color: #fff;
-            font-size: small;
+            font-size: 12px;
             cursor: pointer;
         }
     
         .right-entry {
             float: right;
-            margin-top: 16px;
+            margin-top: 12px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
@@ -334,13 +356,13 @@ function goBack() {
         .entry-username {
             float: none;
             color: #fff;
-            font-size: small;
+            font-size: 12px;
             cursor: pointer;
         }
     
         .entry-title {
             color: #fff;
-            font-size: small;
+            font-size: 10px;
             cursor: pointer;
             &:hover {
                 color: burlywood
@@ -361,7 +383,181 @@ function goBack() {
     }
 }
 
-@media (min-width: 648px) and (max-width: 1495px) {
+@media (min-width: 768px) and (max-width: 992px) {
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+            font-size: 14px;
+            .entry-element {
+                margin-left: 12px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: -12px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 10px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 10px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+@media (min-width: 1200px) and (max-width: 1600px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
     .ant-layout-header{
         padding: 0;
     }
@@ -409,7 +605,7 @@ function goBack() {
     
         .right-entry {
             float: right;
-            margin-right: 34px;
+            margin-right: -34px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
@@ -442,8 +638,13 @@ function goBack() {
         margin-top: -5px;
     }
 }
-
-@media (min-width: 1496px) {
+@media (min-width: 1600px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
     .ant-layout-header{
         padding: 0;
     }
@@ -491,7 +692,7 @@ function goBack() {
     
         .right-entry {
             float: right;
-            margin-right: 34px;
+            margin-right: -2%;
             list-style-type: none;
             display: flex;
             flex-direction: row;
