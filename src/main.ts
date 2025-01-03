@@ -12,6 +12,7 @@ import useUserInfo from '@/store/user'
 import { warningAlert } from '@/utils/AlertUtil'
 import { connectWebSocket } from '@/utils/websocketUtil'
 import { useWebsocketStore } from '@/store/websocket'
+import { listMenus } from '@/api/menu'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -58,4 +59,18 @@ app.directive('antishake', (el, binding) => {
 
 if (userState.token && useWebsocketStore().getWebsocket()?.readyState !== WebSocket.OPEN) {
     connectWebSocket()
-} 
+}
+
+// 获取展示菜单
+listMenus().then(res => {
+    if (res.data.code === '1') {
+        warningAlert('获取菜单失败: ' + res.data.msg)
+        router.push("/login")
+        return
+    }
+    let menus = res.data.map((menu: any) => {
+        menu.display = menu.display === 'true' ? true : false
+        return menu
+    })
+    routerState.setMenus(menus)
+})

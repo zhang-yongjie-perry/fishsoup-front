@@ -3,14 +3,24 @@
         <div class="chat-room">
             <a-layout>
                 <a-layout-sider
+                breakpoint="sm"
+                collapsed-width="100"
                 :style="{ overflow: 'auto', height: '74vh' }">
-                    <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
+                    <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
                         <a-menu-item v-for="friend in friends" :key="friend.username">
-                            <span v-text="friend.username"></span>
-                            <span style="float: right;">[{{ friend.onlineStatus }}]</span>
-                            <a-badge :dot="messagesMap[userStore.loginName + ':' + friend.username] 
-                                ? messagesMap[userStore.loginName + ':' + friend.username]!.status == 0 : false">
-                            </a-badge>
+                            <a-row>
+                                <a-col :xs="23" :sm="12">
+                                    <span v-text="friend.username"></span>
+                                </a-col>
+                                <a-col :xs="0" :sm="7" :push="2">
+                                    <span>[{{ friend.onlineStatus }}]</span>
+                                </a-col>
+                                <a-col :xs="{span: 1, push: 15}" :sm="{span: 1, push: 0}">
+                                    <a-badge :dot="messagesMap[userStore.loginName + ':' + friend.username] 
+                                        ? messagesMap[userStore.loginName + ':' + friend.username]!.status == 0 : false">
+                                    </a-badge>
+                                </a-col>
+                            </a-row>
                         </a-menu-item>
                     </a-menu>
                 </a-layout-sider>

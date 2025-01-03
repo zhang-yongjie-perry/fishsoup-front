@@ -1,4 +1,4 @@
-import { message } from 'ant-design-vue';
+import { message } from 'ant-design-vue'
 
 export function warningAlert(msg: string) {
   message.warning(msg)

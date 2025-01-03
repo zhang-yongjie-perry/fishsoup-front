@@ -12,10 +12,11 @@ import Footsteps from '@/pages/footsteps/Footsteps.vue'
 import PersonalInfo from '@/pages/user/PersonalInfo.vue'
 import ChatRoom from '@/pages/user/ChatRoom.vue'
 import MovieNunu from '@/pages/movies/MovieNunu.vue'
+import MenuSetting from '@/pages/setting/MenuSetting.vue'
 
 const routes = [
-    {path: '/', component: Home, breadcrumbName: '首页'},
-    {path: '/home', component: Home, breadcrumbName: '首页'},
+    {path: '/', component: Login, breadcrumbName: '登录页'},
+    {path: '/mv', component: Home, breadcrumbName: '首页'},
     {path: '/login', component: Login, breadcrumbName: '登录'},
     {path: '/movie/:mv_id', component: Movie, props: true, breadcrumbName: 'V1影视'},
     {path: '/knowledgeBase', component: KnowledgeBase, breadcrumbName: '知识库'},
@@ -28,6 +29,7 @@ const routes = [
     {path: '/personalInfo', component: PersonalInfo, breadcrumbName: '个人信息'},
     {path: '/chatRoom', component: ChatRoom, breadcrumbName: '聊天室'},
     {path: '/movieNunu/:mv_id', component: MovieNunu, props: true, breadcrumbName: 'V2影视'},
+    {path: '/menuSetting', component: MenuSetting, breadcrumbName: '菜单设置'},
 ]
 
 const router = createRouter({

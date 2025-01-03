@@ -14,6 +14,18 @@
                                     }">{{ link.name }}</span>
                                 </router-link>
                             </a-badge>
+                            <a-badge v-else-if="link.url === '/memo'">
+                                <span class="entry-title" :style="{
+                                    'font-weight': routerState.to === link.url ? 'bold' : 'normal',
+                                    'text-decoration': routerState.to === link.url ? 'underline' : 'none'
+                                }" @click="toGetMemo">{{ link.name }}</span>
+                            </a-badge>
+                            <a-badge v-else-if="link.url === '/blindBox'">
+                                <span class="entry-title" :style="{
+                                    'font-weight': routerState.to === link.url ? 'bold' : 'normal',
+                                    'text-decoration': routerState.to === link.url ? 'underline' : 'none'
+                                }" @click="drawDivination">{{ link.name }}</span>
+                            </a-badge>
                             <a-badge v-else style="display: inline;">
                                 <router-link :to="link.url" style="background-color: transparent;">
                                     <span class="entry-title" :style="{
@@ -42,7 +54,7 @@
                     <div class="go-back" @click="goBack()">返回</div>
                 </a-col>
                 <a-col :xs="{span: 8, pull: 1}" :sm="{span: 20, push: 0}" :md="{span: 20, push: 0}" 
-                :lg="{span: 20, push: 0}" :xl="{span: 5, push: 0}">
+                :lg="{span: 20, push: 0}" :xl="{span: 3, push: 1}">
                     <ul class="right-entry">
                         <li>
                             <span v-if="userStore.loginName" class="entry-username">
@@ -56,6 +68,11 @@
                                             <a-menu-item>
                                                 <router-link to="/personalInfo" style="background-color: transparent;">
                                                     个人信息
+                                                </router-link>
+                                            </a-menu-item>
+                                            <a-menu-item>
+                                                <router-link to="/menuSetting" style="background-color: transparent;">
+                                                    菜单设置
                                                 </router-link>
                                             </a-menu-item>
                                         </a-menu>
@@ -86,12 +103,21 @@
         <a-layout class="content" :style="{'min-height': height + 'px'}">
             <slot></slot>
         </a-layout>
+        <a-modal cancelText="关闭" okText="保存" v-model:visible="memoVisible" :title="memoTitle" @ok="memoHandleOk" style="width: 90%;">
+            <a-textarea v-model:value="memoValue" placeholder="请输入内容" :rows="15" />
+        </a-modal>
         <a-layout-footer class="footer">路虽远，行则将至；梦虽遥，做则必成</a-layout-footer>
     </a-layout>
 </template>
 
+<script lang="ts">
+// 由于setup函数中的defineProps无法引用本地变量, 再增加一个script标签声明变量
+const now = new Date()
+const today_format = now.getFullYear() + '-' + (now.getMonth().toString().length == 1 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1)
+    + '-' + (now.getDate().toString().length == 1 ? '0' + now.getDate() : now.getDate())
+</script>
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { logout } from '@/api/user'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -100,31 +126,68 @@ import useUserInfo from '@/store/user'
 import useRouterState from '@/store/router'
 import useWebsocketStore from '@/store/websocket'
 import { chatOffline } from '@/utils/websocketUtil'
+import { successAlert, warningAlert } from '@/utils/AlertUtil'
+import { saveMemo, getMemo } from '@/api/memo'
+// import { listMenus } from '@/api/menu'
+import type { MenuSetting } from '@/interfaces/Entity'
 
-const { height } = defineProps(['height'])
+const { height, today = today_format } = defineProps<{ height?: number, today?:string }>()
 const searchRef = ref('')
 const router = useRouter()
 const routerState = useRouterState()
 const userStore = useUserInfo()
 const searchTextState = useSearchTextState()
-const links = ref([
-    { name: '影视', url: '/home' },
-	{ name: '知识库', url: '/knowledgeBase' },
-	{ name: '我的', url: '/myCreation' },
-	{ name: '联系', url: '/chatRoom' },
-	{ name: '足迹', url: '/footsteps' },
-	{ name: '备忘录', url: '/memo' },
-])
+const memoVisible = ref(false)
+const memoValue = ref('')
+const links = reactive<MenuSetting[]>(routerState.getMenus().filter(menu => menu.display))
+// const links = ref([
+//     { name: '影视', url: '/home' },
+// 	{ name: '知识库', url: '/knowledgeBase' },
+// 	{ name: '我的', url: '/myCreation' },
+// 	{ name: '联系', url: '/chatRoom' },
+// 	{ name: '足迹', url: '/footsteps' },
+// 	{ name: '备忘录', url: '/memo' },
+// 	{ name: '盲盒', url: '/blindBox' },
+// ])
 
-const emits = defineEmits(['update:toSearch'])
+const emits = defineEmits(['update:toSearch', 'update:memo'])
 
-onMounted(() => {
+onMounted(async () => {
     searchRef.value = searchTextState.getSearchText()
+    window.addEventListener('keydown', autoSaveMemo)
+    // let res = await listMenus()
+    // if (res.data.code === '1') {
+    //     warningAlert('菜单请求失败: ' + res.data.msg)
+    //     return
+    // }
+    // links.splice(0)
+    // res.data.foreach((menu: MenuSetting) => {
+    //     if (menu.display === 1) {
+    //         links.push(menu)
+    //     }
+    // })
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', autoSaveMemo)
 })
 
 watch(() => searchRef.value, (value) => {
     searchTextState.setSearchText(value)
-});
+})
+
+watchEffect(() => {
+    getMemo(today).then(res => {
+        if (res.data.code === '1') {
+            return
+        }
+        emits('update:memo', res.data.content)
+    })
+})
+
+const memoTitle = computed(() => {
+    return today + ' 待办'
+})
 
 function toLogin() {
     if (userStore.loginName) {
@@ -155,6 +218,44 @@ function onSearch() {
 
 function goBack() {
     router.go(-1)
+}
+
+function toGetMemo() {
+    getMemo(today).then(res => {
+        if (res.data.code === '1') {
+            warningAlert('网络异常, 请稍后重试')
+            return
+        }
+        memoValue.value = res.data.content
+        memoVisible.value = true
+    })
+}
+
+function memoHandleOk() {
+    saveMemo({content: memoValue.value, date: today}).then(res => {
+        if (res.data.code === '1') {
+            warningAlert('保存失败, 请重试')
+            return
+        }
+        successAlert('保存成功')
+    })
+}
+
+function drawDivination() {
+    warningAlert('暂未开放, 敬请期待')
+}
+
+function autoSaveMemo(event: any) {
+    if (!memoVisible.value) {
+        return
+    }
+    // 检查是否按下了 Ctrl 键和 S 键
+    if (event.ctrlKey && (event.key === 's' || event.key === 'S')) {
+        // 阻止默认行为（如果有的话，比如浏览器的保存页面功能）
+        event.preventDefault()
+        // 执行保存操作
+        memoHandleOk()
+    }
 }
 </script>
 
@@ -224,7 +325,7 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 24px;
+                margin-left: 15px;
             }
         }
     
@@ -333,7 +434,7 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 10px;
+                margin-left: 8px;
             }
         }
     
@@ -418,7 +519,7 @@ function goBack() {
             flex-direction: row;
             font-size: 14px;
             .entry-element {
-                margin-left: 12px;
+                margin-left: 8px;
             }
         }
     
@@ -513,7 +614,7 @@ function goBack() {
         .go-back {
             display: inline-block;
             color: #fff;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
         }
     
@@ -526,13 +627,13 @@ function goBack() {
     
         .entry-username {
             color: #fff;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
         }
     
         .entry-title {
             color: #fff;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             &:hover {
                 color: burlywood
@@ -592,14 +693,14 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 20px;
+                margin-left: 15px;
             }
         }
     
         .go-back {
             display: inline-block;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
         }
     
@@ -613,13 +714,13 @@ function goBack() {
     
         .entry-username {
             color: #fff;
-            font-size: large;
+            font-size: 16px;
             cursor: pointer;
         }
     
         .entry-title {
             color: #fff;
-            font-size: large;
+            font-size: 16px;
             cursor: pointer;
             &:hover {
                 color: burlywood
@@ -679,7 +780,7 @@ function goBack() {
             flex-direction: row;
     
             .entry-element {
-                margin-left: 50px;
+                margin-left: 30px;
             }
         }
     

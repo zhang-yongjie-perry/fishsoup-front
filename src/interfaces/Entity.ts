@@ -66,3 +66,13 @@ export interface MessageEntity {
     status: number,
     content: UserInfo[]
 }
+
+export interface MenuSetting {
+    id: string,
+    menuId: string,
+    name: string,
+    url: string,
+    sort: number,
+    display: boolean,
+    remark: string
+}

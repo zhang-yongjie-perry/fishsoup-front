@@ -33,6 +33,7 @@ import type { UserInfo } from '@/interfaces/User'
 import { login, register, getPublicKey } from '@/api/user'
 import { useRouter } from 'vue-router'
 import { useUserInfo } from '@/store/user'
+import useRouterState from '@/store/router'
 import { message } from 'ant-design-vue'
 import { chatOnline } from '@/utils/websocketUtil'
 import { JSEncrypt } from 'jsencrypt'
@@ -41,6 +42,7 @@ let loading = ref(false)
 const formRef = ref()
 const router = useRouter()
 const userStore = useUserInfo()
+const routerState = useRouterState()
 message.config({top: '124px'})
 const userInfo: UnwrapRef<UserInfo> = reactive({
     username: '',
@@ -95,7 +97,7 @@ function submit() {
             }
             userStore.setUserState(userInfo.username, "Bearer " + result.data.data.token, result.data.data.user.mobilePhone, result.data.data.user.email, result.data.data.user.sex)
             chatOnline()
-            router.push('/home')
+            router.push(routerState.getHomeMenu().url)
         }).catch(error => {
             loading.value = false
             message.warning(error)

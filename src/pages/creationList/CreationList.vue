@@ -1,5 +1,5 @@
 <template>
-    <Container @update:to-search="toSearch">
+    <Container :today="date" @update:memo="updateMemo" @update:to-search="toSearch">
         <a-row class="content">
             <a-col :xs="24" :xl="18">
                 <a-row>
@@ -53,18 +53,17 @@
                 </a-row>
             </a-col>
             <a-col class="appendage" :xs="0" :xl="6">
-                <div style="position: fixed; top: 25%;left: 75%; right: 2%;">
+                <div style="position: fixed; top: 22%;left: 75%; right: 2%;">
                     <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
                         <a-calendar 
                             :locale="locale"
                             :fullscreen="false"
                             v-model:value="day"
-                            @panelChange="onPanelChange"
                             @select="onSelect"
                         />
                     </div>
-                    <div style="border: 1px solid black;width: 100%;height: 90px;display: flex;justify-content: center;align-items: center;margin-top: 24px;">
-                        <h1>This is an advertising space</h1>
+                    <div style="width: 100%;height: 150px;display: flex;justify-content: center;align-items: start ;margin-top: 24px;">
+                        <a-textarea style="color: #666;" readonly v-model:value="memoVal" :rows="6"/>
                     </div>
                 </div>
             </a-col>
@@ -86,6 +85,8 @@ import locale from 'ant-design-vue/es/date-picker/locale/zh_CN' // 仅用于日�
 // import zhCN from 'ant-design-vue/es/locale/zh_CN' // 用于 a-config-provider 内部组件的汉化
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import { getToday } from '@/utils/DateUtiles'
+import { getMemo } from '@/api/memo'
 
 // 需要设置 dayjs 语言模式 cn/en
 dayjs.locale('cn')
@@ -100,21 +101,24 @@ const loadingMore = ref(false)
 const hasMore = ref(false)
 const searchTextState = useSearchTextState()
 const day = ref<Dayjs>()
-const selectedDayValue = ref<Dayjs>();
+const date = ref(getToday())
+const memoVal = ref('今天什么事情也没有安排, 请享受这美好时光吧~')
+const fullscreen = ref(false)
 
+function large() {
+    fullscreen.value = true
+}
 
 onMounted(() => {
     toGetCreationList(1, false)
 })
 
-const onPanelChange = (value: Dayjs, mode: string) => {
-    console.log(value, mode);
+const onSelect = (value: Dayjs) => {
+    date.value = value.format('YYYY-MM-DD')
 }
 
-const onSelect = (value: Dayjs) => {
-    selectedDayValue.value = value
-    console.log('selectedDayValue.value');
-    
+function updateMemo(value: string) {
+    memoVal.value = value ? value : '今天什么事情也没有安排, 请享受这美好时光吧~'
 }
 
 function toGetCreationList(pn: number | null, append: boolean) {

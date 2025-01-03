@@ -39,6 +39,7 @@ declare module 'vue' {
     ARow: typeof import('ant-design-vue/es')['Row']
     ASelect: typeof import('ant-design-vue/es')['Select']
     ASpin: typeof import('ant-design-vue/es')['Spin']
+    ASwitch: typeof import('ant-design-vue/es')['Switch']
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
     Container: typeof import('./src/components/Container.vue')['default']
