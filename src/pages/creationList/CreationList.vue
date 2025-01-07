@@ -86,7 +86,6 @@ import locale from 'ant-design-vue/es/date-picker/locale/zh_CN' // 仅用于日�
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { getToday } from '@/utils/DateUtiles'
-import { getMemo } from '@/api/memo'
 
 // 需要设置 dayjs 语言模式 cn/en
 dayjs.locale('cn')
@@ -103,11 +102,6 @@ const searchTextState = useSearchTextState()
 const day = ref<Dayjs>()
 const date = ref(getToday())
 const memoVal = ref('今天什么事情也没有安排, 请享受这美好时光吧~')
-const fullscreen = ref(false)
-
-function large() {
-    fullscreen.value = true
-}
 
 onMounted(() => {
     toGetCreationList(1, false)

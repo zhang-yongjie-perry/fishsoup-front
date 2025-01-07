@@ -103,7 +103,22 @@
         <a-layout class="content" :style="{'min-height': height + 'px'}">
             <slot></slot>
         </a-layout>
-        <a-modal cancelText="关闭" okText="保存" v-model:visible="memoVisible" :title="memoTitle" @ok="memoHandleOk" style="width: 90%;">
+        <a-modal cancelText="关闭" okText="保存" 
+            v-model:visible="memoVisible" 
+            :title="memoTitle" 
+            @ok="memoHandleOk"
+            @cancel="afterClose"
+            style="width: 90%;">
+            <div>
+                <div :style="{'background-color': colorRef}" style="margin-right: 24px;padding: 3px 10px;border-radius: 5px;user-select: none;display: inline-block;">
+                    <span :style="{'color': colorRef === 'transparent' ? '#aaa' : '#fff'}">请选择今天的颜色</span>
+                </div>
+                <div v-for="color in colors" class="select-color"
+                    :style="{'background-color': color.color, 'border': color.color === 'transparent' ? '1px solid #aaa' : '0px'}"
+                    @click="getColor(color.color)">
+                    <span class="select-font" :style="{'color': color.color === 'transparent' ? '#888' : '#fff'}">{{ color.name }}</span>
+                </div>
+            </div>
             <a-textarea v-model:value="memoValue" placeholder="请输入内容" :rows="15" />
         </a-modal>
         <a-layout-footer class="footer">路虽远，行则将至；梦虽遥，做则必成</a-layout-footer>
@@ -117,6 +132,7 @@ const today_format = now.getFullYear() + '-' + (now.getMonth().toString().length
     + '-' + (now.getDate().toString().length == 1 ? '0' + now.getDate() : now.getDate())
 </script>
 <script setup lang="ts">
+import '@/assets/container.scss'
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { logout } from '@/api/user'
 import { message } from 'ant-design-vue'
@@ -128,10 +144,9 @@ import useWebsocketStore from '@/store/websocket'
 import { chatOffline } from '@/utils/websocketUtil'
 import { successAlert, warningAlert } from '@/utils/AlertUtil'
 import { saveMemo, getMemo } from '@/api/memo'
-// import { listMenus } from '@/api/menu'
 import type { MenuSetting } from '@/interfaces/Entity'
 
-const { height, today = today_format } = defineProps<{ height?: number, today?:string }>()
+const { height, today = today_format, openMemo = false } = defineProps<{ height?: number, today?:string, openMemo?: boolean }>()
 const searchRef = ref('')
 const router = useRouter()
 const routerState = useRouterState()
@@ -139,33 +154,25 @@ const userStore = useUserInfo()
 const searchTextState = useSearchTextState()
 const memoVisible = ref(false)
 const memoValue = ref('')
+const colorRef = ref('transparent')
 const links = reactive<MenuSetting[]>(routerState.getMenus().filter(menu => menu.display))
-// const links = ref([
-//     { name: '影视', url: '/home' },
-// 	{ name: '知识库', url: '/knowledgeBase' },
-// 	{ name: '我的', url: '/myCreation' },
-// 	{ name: '联系', url: '/chatRoom' },
-// 	{ name: '足迹', url: '/footsteps' },
-// 	{ name: '备忘录', url: '/memo' },
-// 	{ name: '盲盒', url: '/blindBox' },
-// ])
+const colors = ref([
+    {color: '#f84141', name: '赤'}, 
+    {color: 'orange', name: '橙'},
+    {color: '#d0d010', name: '黄'},
+    {color: '#52c41a', name: '绿'},
+    {color: '#29eeee', name: '青'},
+    {color: '#7272f6', name: '蓝'},
+    {color: '#d801d8', name: '紫'},
+    {color: '#3a3a3a', name: '黑'},
+    {color: 'transparent', name: '无'}, 
+])
 
-const emits = defineEmits(['update:toSearch', 'update:memo'])
+const emits = defineEmits(['update:toSearch', 'update:memo', 'update:memoClose', 'update:memoSave'])
 
 onMounted(async () => {
     searchRef.value = searchTextState.getSearchText()
     window.addEventListener('keydown', autoSaveMemo)
-    // let res = await listMenus()
-    // if (res.data.code === '1') {
-    //     warningAlert('菜单请求失败: ' + res.data.msg)
-    //     return
-    // }
-    // links.splice(0)
-    // res.data.foreach((menu: MenuSetting) => {
-    //     if (menu.display === 1) {
-    //         links.push(menu)
-    //     }
-    // })
 })
 
 onBeforeUnmount(() => {
@@ -183,10 +190,14 @@ watchEffect(() => {
         }
         emits('update:memo', res.data.content)
     })
+    
+    if (openMemo) {
+        toGetMemo()
+    }
 })
 
 const memoTitle = computed(() => {
-    return today + ' 待办'
+    return today + ' 待办: 以#开头表示待完成, 以$开头表示已完成, 任务需以回车作为结尾'
 })
 
 function toLogin() {
@@ -226,19 +237,25 @@ function toGetMemo() {
             warningAlert('网络异常, 请稍后重试')
             return
         }
-        memoValue.value = res.data.content
+        memoValue.value = res.data ? res.data.content : ''
+        colorRef.value = res.data ? res.data.color : 'transparent'
         memoVisible.value = true
     })
 }
 
 function memoHandleOk() {
-    saveMemo({content: memoValue.value, date: today}).then(res => {
+    saveMemo({content: memoValue.value, date: today, color: colorRef.value}).then(res => {
         if (res.data.code === '1') {
             warningAlert('保存失败, 请重试')
             return
         }
         successAlert('保存成功')
+        emits('update:memoSave')
     })
+}
+
+function afterClose() {
+    emits('update:memoClose', false)
 }
 
 function drawDivination() {
@@ -257,573 +274,11 @@ function autoSaveMemo(event: any) {
         memoHandleOk()
     }
 }
+
+function getColor(color: string) {
+    colorRef.value = color
+}
 </script>
 
 <style lang="scss">
-@media (max-width: 576px) {
-    #hello {
-        display: none;
-    }
-    #login {
-        margin-left: 15px;
-    }
-    .ant-popover-buttons button {
-        margin-left: 3px;
-    }
-    .ant-popover-message-title {
-        width: 110px;
-    }
-    .ant-layout-header{
-        padding: 0;
-        line-height: 10px;
-    }
-    .fish-header {
-        width: 100%;
-        height: 100px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-left: 24px;
-            opacity: 0.85;
-        }
-
-        .ant-input-affix-wrapper {
-            border: 0px;
-            padding: 5px 10px;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-
-        .ant-input {
-            font-size: x-small;
-            border: 0px;
-        }
-
-        .ant-btn {
-            font-size: x-small;
-            border: 0px;
-            margin-left: 0px
-        }
-    
-        .left-entry {
-            margin-top: 25px;
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-    
-            .entry-element {
-                margin-left: 15px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            margin-top: 12px;
-            margin-left: 24px;
-            color: #fff;
-            font-size: x-small;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            margin-top: 12px;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            float: none;
-            color: #fff;
-            font-size: x-small;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: x-small;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 12px;
-        margin-top: 12px !important;
-    }
-
-    .footer {
-        text-align: center;
-        height: 12px;
-        margin-bottom: 12px;
-        margin-top: -10px;
-    }
-}
-
-
-@media (min-width: 576px) and (max-width: 768px) {
-    #login {
-        margin-left: 24px;
-    }
-    .ant-layout-header{
-        padding: 0;
-        line-height: 10px;
-    }
-    .fish-header {
-        width: 100%;
-        height: 100px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-top: 16px;
-            margin-left: 24px;
-            opacity: 0.85;
-        }
-
-        .ant-input-affix-wrapper {
-            border: 0px;
-            padding: 5px 10px;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-
-        .ant-input {
-            font-size: 12px;
-            border: 0px;
-        }
-
-        .ant-btn {
-            font-size: 12px;
-            border: 0px;
-            margin-left: 0px
-        }
-    
-        .left-entry {
-            margin-top: 25px;
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-    
-            .entry-element {
-                margin-left: 8px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            margin-top: 12px;
-            color: #fff;
-            font-size: 12px;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            margin-top: 12px;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            float: none;
-            color: #fff;
-            font-size: 12px;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: 10px;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 12px;
-        margin-top: 12px !important;
-    }
-
-    .footer {
-        text-align: center;
-        height: 12px;
-        margin-bottom: 12px;
-        margin-top: -10px;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 992px) {
-    .ant-layout-header{
-        padding: 0;
-    }
-    .fish-header {
-        width: 100%;
-        height: 144px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-top: 16px;
-            opacity: 0.85;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-    
-        .left-entry {
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-            font-size: 14px;
-            .entry-element {
-                margin-left: 8px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            margin-right: -12px;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: 10px;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 24px;
-    }
-
-    .footer {
-        text-align: center;
-        height: 20px;
-        margin-bottom: 20px;
-        margin-top: -5px;
-    }
-}
-
-@media (min-width: 992px) and (max-width: 1200px) {
-    #hello {
-        display: inline;
-    }
-    #login {
-        margin-left: 20px;
-    }
-    .ant-layout-header{
-        padding: 0;
-    }
-    .fish-header {
-        width: 100%;
-        height: 144px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-top: 16px;
-            opacity: 0.85;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-    
-        .left-entry {
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-    
-            .entry-element {
-                margin-left: 10px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 24px;
-    }
-
-    .footer {
-        text-align: center;
-        height: 20px;
-        margin-bottom: 20px;
-        margin-top: -5px;
-    }
-}
-@media (min-width: 1200px) and (max-width: 1600px) {
-    #hello {
-        display: inline;
-    }
-    #login {
-        margin-left: 20px;
-    }
-    .ant-layout-header{
-        padding: 0;
-    }
-    .fish-header {
-        width: 100%;
-        height: 144px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-top: 16px;
-            opacity: 0.85;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-    
-        .left-entry {
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-    
-            .entry-element {
-                margin-left: 15px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            margin-right: -34px;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 24px;
-    }
-
-    .footer {
-        text-align: center;
-        height: 20px;
-        margin-bottom: 20px;
-        margin-top: -5px;
-    }
-}
-@media (min-width: 1600px) {
-    #hello {
-        display: inline;
-    }
-    #login {
-        margin-left: 20px;
-    }
-    .ant-layout-header{
-        padding: 0;
-    }
-    .fish-header {
-        width: 100%;
-        height: 144px;
-        background-color: #fff;
-        background-image: url('/header-back.png');
-    
-        .ant-input-group-wrapper {
-            margin-top: 16px;
-            opacity: 0.85;
-        }
-    
-        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-    
-        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            .ant-input-search-button {
-                border-radius: 0 10px 10px 0;
-            }
-        }
-    
-        .left-entry {
-            float: left;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-    
-            .entry-element {
-                margin-left: 30px;
-            }
-        }
-    
-        .go-back {
-            display: inline-block;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-        }
-    
-        .right-entry {
-            float: right;
-            margin-right: -2%;
-            list-style-type: none;
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .entry-username {
-            color: #fff;
-            font-size: large;
-            cursor: pointer;
-        }
-    
-        .entry-title {
-            color: #fff;
-            font-size: large;
-            cursor: pointer;
-            &:hover {
-                color: burlywood
-            }
-        }
-    }
-
-    .content {
-        padding: 0px 24px;
-    }
-
-    .footer {
-        text-align: center;
-        height: 20px;
-        margin-bottom: 20px;
-        margin-top: -5px;
-    }
-}
 </style>

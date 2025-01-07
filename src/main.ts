@@ -3,7 +3,7 @@ import '@/scss/mixin.scss'
 import 'ant-design-vue/dist/antd.css'
 import { createApp } from 'vue'
 import App from '@/App.vue'
-import router from './router'
+import router from '@/router'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import '@/assets/iconfont/iconfont.js'
@@ -12,7 +12,7 @@ import useUserInfo from '@/store/user'
 import { warningAlert } from '@/utils/AlertUtil'
 import { connectWebSocket } from '@/utils/websocketUtil'
 import { useWebsocketStore } from '@/store/websocket'
-import { listMenus } from '@/api/menu'
+import { init } from '@/utils/init'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -31,7 +31,6 @@ router.beforeEach((to, from, next) => {
         warningAlert('您尚未登录, 请先登录')
         router.push("/login")
         return
-        // return '/login'
     }
     routerState.from = from.path
     routerState.to = to.path
@@ -62,15 +61,6 @@ if (userState.token && useWebsocketStore().getWebsocket()?.readyState !== WebSoc
 }
 
 // 获取展示菜单
-listMenus().then(res => {
-    if (res.data.code === '1') {
-        warningAlert('获取菜单失败: ' + res.data.msg)
-        router.push("/login")
-        return
-    }
-    let menus = res.data.map((menu: any) => {
-        menu.display = menu.display === 'true' ? true : false
-        return menu
-    })
-    routerState.setMenus(menus)
-})
+if (userState.token) {
+    init()
+}

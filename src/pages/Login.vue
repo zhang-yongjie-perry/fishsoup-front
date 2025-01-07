@@ -37,6 +37,7 @@ import useRouterState from '@/store/router'
 import { message } from 'ant-design-vue'
 import { chatOnline } from '@/utils/websocketUtil'
 import { JSEncrypt } from 'jsencrypt'
+import { init } from '@/utils/init'
 
 let loading = ref(false)
 const formRef = ref()
@@ -89,7 +90,7 @@ function submit() {
     .then(() => {
         const loginUserInfo = JSON.parse(JSON.stringify(userInfo))
         loginUserInfo.password = crypt.encrypt(userInfo.password)
-        login(loginUserInfo, encodeURIComponent(publicKey.value)).then((result) => {
+        login(loginUserInfo, encodeURIComponent(publicKey.value)).then(async (result) => {
             if (result.data.code !== '0') {
                 message.warning(result.data.msg ? result.data.msg : '登录失败, 请联系管理员', 1)    
                 loading.value = false
@@ -97,6 +98,7 @@ function submit() {
             }
             userStore.setUserState(userInfo.username, "Bearer " + result.data.data.token, result.data.data.user.mobilePhone, result.data.data.user.email, result.data.data.user.sex)
             chatOnline()
+            await init()
             router.push(routerState.getHomeMenu().url)
         }).catch(error => {
             loading.value = false

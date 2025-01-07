@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AAffix: typeof import('ant-design-vue/es')['Affix']
     ABadge: typeof import('ant-design-vue/es')['Badge']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACalendar: typeof import('ant-design-vue/es')['Calendar']
@@ -42,6 +43,7 @@ declare module 'vue' {
     ASwitch: typeof import('ant-design-vue/es')['Switch']
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     Container: typeof import('./src/components/Container.vue')['default']
     DialogBox: typeof import('./src/components/DialogBox.vue')['default']
     MyEditor: typeof import('./src/components/MyEditor.vue')['default']

@@ -13,6 +13,7 @@ import PersonalInfo from '@/pages/user/PersonalInfo.vue'
 import ChatRoom from '@/pages/user/ChatRoom.vue'
 import MovieNunu from '@/pages/movies/MovieNunu.vue'
 import MenuSetting from '@/pages/setting/MenuSetting.vue'
+import Calendar from '@/pages/calendar/Calendar.vue'
 
 const routes = [
     {path: '/', component: Login, breadcrumbName: '登录页'},
@@ -30,6 +31,7 @@ const routes = [
     {path: '/chatRoom', component: ChatRoom, breadcrumbName: '聊天室'},
     {path: '/movieNunu/:mv_id', component: MovieNunu, props: true, breadcrumbName: 'V2影视'},
     {path: '/menuSetting', component: MenuSetting, breadcrumbName: '菜单设置'},
+    {path: '/calendar', component: Calendar, breadcrumbName: '日历'},
 ]
 
 const router = createRouter({

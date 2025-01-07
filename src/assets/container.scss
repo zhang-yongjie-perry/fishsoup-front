@@ -1,0 +1,582 @@
+.ant-modal-body {
+    padding: 12px
+}
+
+.select-color {
+    display: inline-block;
+    margin: 0 15px 8px 0;
+    padding: 3px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: filter 0.3s ease; /* 平滑的过渡效果 */
+}
+
+.select-color:hover {
+    filter: brightness(1.2); /* 增加亮度 */
+}
+
+@media (max-width: 576px) {
+    #hello {
+        display: none;
+    }
+    #login {
+        margin-left: 15px;
+    }
+    .ant-popover-buttons button {
+        margin-left: 3px;
+    }
+    .ant-popover-message-title {
+        width: 110px;
+    }
+    .ant-layout-header{
+        padding: 0;
+        line-height: 10px;
+    }
+    .fish-header {
+        width: 100%;
+        height: 100px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-left: 24px;
+            opacity: 0.85;
+        }
+
+        .ant-input-affix-wrapper {
+            border: 0px;
+            padding: 5px 10px;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+
+        .ant-input {
+            font-size: x-small;
+            border: 0px;
+        }
+
+        .ant-btn {
+            font-size: x-small;
+            border: 0px;
+            margin-left: 0px
+        }
+    
+        .left-entry {
+            margin-top: 25px;
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 15px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            margin-top: 12px;
+            margin-left: 24px;
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-top: 12px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            float: none;
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: x-small;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 12px;
+        margin-top: 12px !important;
+    }
+
+    .footer {
+        text-align: center;
+        height: 12px;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    }
+}
+
+
+@media (min-width: 576px) and (max-width: 768px) {
+    #login {
+        margin-left: 24px;
+    }
+    .ant-layout-header{
+        padding: 0;
+        line-height: 10px;
+    }
+    .fish-header {
+        width: 100%;
+        height: 100px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            margin-left: 24px;
+            opacity: 0.85;
+        }
+
+        .ant-input-affix-wrapper {
+            border: 0px;
+            padding: 5px 10px;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+
+        .ant-input {
+            font-size: 12px;
+            border: 0px;
+        }
+
+        .ant-btn {
+            font-size: 12px;
+            border: 0px;
+            margin-left: 0px
+        }
+    
+        .left-entry {
+            margin-top: 25px;
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 8px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            margin-top: 12px;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-top: 12px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            float: none;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 10px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 12px;
+        margin-top: 12px !important;
+    }
+
+    .footer {
+        text-align: center;
+        height: 12px;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+            font-size: 14px;
+            .entry-element {
+                margin-left: 8px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: -12px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 10px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 10px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+@media (min-width: 1200px) and (max-width: 1600px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+            .entry-element {
+                margin-left: 15px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: -34px;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}
+@media (min-width: 1600px) {
+    #hello {
+        display: inline;
+    }
+    #login {
+        margin-left: 20px;
+    }
+    .ant-layout-header{
+        padding: 0;
+    }
+    .fish-header {
+        width: 100%;
+        height: 144px;
+        background-color: #fff;
+        background-image: url('/header-back.png');
+    
+        .ant-input-group-wrapper {
+            margin-top: 16px;
+            opacity: 0.85;
+        }
+    
+        .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+    
+        .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child { 
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .ant-input-search-button {
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    
+        .left-entry {
+            float: left;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+    
+            .entry-element {
+                margin-left: 30px;
+            }
+        }
+    
+        .go-back {
+            display: inline-block;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    
+        .right-entry {
+            float: right;
+            margin-right: -2%;
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+        }
+    
+        .entry-username {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+        }
+    
+        .entry-title {
+            color: #fff;
+            font-size: large;
+            cursor: pointer;
+            &:hover {
+                color: burlywood
+            }
+        }
+    }
+
+    .content {
+        padding: 0px 24px;
+    }
+
+    .footer {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+}

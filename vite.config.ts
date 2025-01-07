@@ -6,6 +6,14 @@ import Components from 'unplugin-vue-components/vite'
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 
 export default defineConfig({
+  // 消除警告信息: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0
+  css:{
+    preprocessorOptions:{
+      scss:{
+        api:"modern-compiler"
+      }
+    }
+  },
   plugins: [
     vue(),
     Components({

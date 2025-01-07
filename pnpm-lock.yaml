@@ -32,6 +32,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      chinese-lunar-calendar:
+        specifier: ^1.0.1
+        version: 1.0.1
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -856,6 +859,9 @@ packages:
 
   caniuse-lite@1.0.30001680:
     resolution: {integrity: sha512-rPQy70G6AGUMnbwS1z6Xg+RkHYPAi18ihs47GH0jcxIG7wArmPgY3XbS2sRdBbxJljp3thdT8BIqv9ccCypiPA==}
+
+  chinese-lunar-calendar@1.0.1:
+    resolution: {integrity: sha512-T5XjtA6ygOkxjwltYf8dEB1DLsPKewDKajf74fNeT6rH2g9EZPf2AHk6vAlK/SAImTYKXoUNQ3Q4JwN0BduqRA==}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -3144,6 +3150,8 @@ snapshots:
       set-function-length: 1.2.2
 
   caniuse-lite@1.0.30001680: {}
+
+  chinese-lunar-calendar@1.0.1: {}
 
   chokidar@3.6.0:
     dependencies:

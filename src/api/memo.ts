@@ -7,3 +7,7 @@ export function saveMemo(value: any) {
 export function getMemo(value: string) {
     return axios.get(`/web/memo/${value}`);
 }
+
+export function getMemoList(value: string) {
+    return axios.get(`/web/memo/list/${value}`);
+}
