@@ -81,6 +81,8 @@ const playList = computed(() => {
     return key.value ? mv.playOrgs.find((org: PlayOrg) => org.orgName === key.value).playList : []
 })
 
+const nextList = ref<string[]>([])
+
 onMounted(() => {
     window.addEventListener('beforeunload', e => beforeunloadHandler(e))
     getTvMovieById(mv_id).then(res => {
@@ -96,6 +98,8 @@ onMounted(() => {
         episode.value = res.data.hisEpisode ? res.data.hisEpisode : res.data.playOrgs[0].playList[0].episode
         mvUrl.value = res.data.hisM3u8Url ? res.data.hisM3u8Url : res.data.playOrgs[0].playList[0].m3u8Url
         startTime.value = res.data.startTime - 2 > 0 ? res.data.startTime - 2 : 0
+        nextList.value.splice(0)
+        nextList.value.push(mvUrl.value)
         initPlayer()
         loading.value = false
     })
@@ -111,6 +115,8 @@ function initPlayer() {
         defaultMuted: true,
         plugins: [HlsPlugin],
         startTime: startTime.value,
+        autoplay: true,
+        autoplayMuted: true, // 静音起播
         rotateFullscreen: true,
         poster: 'mvPoster.jpg',
         hls: {
@@ -121,6 +127,9 @@ function initPlayer() {
                 // 该参数会透传给 fetch，默认值为 undefined
                 mode: 'cors'
             }
+        },
+        playnext: {
+            urlList: nextList.value
         }
     })
 
@@ -134,8 +143,26 @@ function initPlayer() {
             return
         }
         episode.value = playList.value[currentPvIndex + 1].episode
-        playerRef.value.seek(20)
-        playerRef.value.switchURL(playList.value[currentPvIndex + 1].m3u8Url)
+        mvUrl.value = playList.value[currentPvIndex + 1].m3u8Url
+        playerRef.value.playNext({
+            url: mvUrl.value,
+            autoplayMuted: false
+        })
+    })
+
+    playerRef.value.on(Events.PLAYNEXT, () => {
+        if (!playerRef.value) {
+            return
+        }
+
+        let currentPvIndex = playList.value.findIndex((pv: any) => pv.episode === episode.value)
+        if (currentPvIndex + 1 === playList.value.length) {
+            return
+        }
+        episode.value = playList.value[currentPvIndex + 1].episode
+        mvUrl.value = playList.value[currentPvIndex + 1].m3u8Url
+        playerRef.value.seek(0)
+        playerRef.value.switchURL(mvUrl.value)
     })
 }
 
@@ -148,9 +175,9 @@ async function onEpisodeChange(episodeVal: string, m3u8Url: string) {
         return
     }
     episode.value = episodeVal
-    playerRef.value.seek(20)
-    playerRef.value.switchURL(m3u8Url)
     mvUrl.value = m3u8Url
+    playerRef.value.seek(0)
+    playerRef.value.switchURL(m3u8Url)
 }
 
 onBeforeUnmount(() => {

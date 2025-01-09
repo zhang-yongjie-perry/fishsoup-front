@@ -9,13 +9,13 @@
                     <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
                         <a-menu-item v-for="friend in friends" :key="friend.username">
                             <a-row>
-                                <a-col :xs="23" :sm="12">
+                                <a-col :span="12">
                                     <span v-text="friend.username"></span>
                                 </a-col>
-                                <a-col :xs="0" :sm="7" :push="2">
+                                <a-col :span="7" :push="2">
                                     <span>[{{ friend.onlineStatus }}]</span>
                                 </a-col>
-                                <a-col :xs="{span: 1, push: 15}" :sm="{span: 1, push: 0}">
+                                <a-col :span="1">
                                     <a-badge :dot="messagesMap[userStore.loginName + ':' + friend.username] 
                                         ? messagesMap[userStore.loginName + ':' + friend.username]!.status == 0 : false">
                                     </a-badge>

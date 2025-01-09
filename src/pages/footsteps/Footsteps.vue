@@ -48,7 +48,10 @@
                         <template #cover>
                             <img class="img-mv-preview" 
                             :alt="tv.episode" 
-                            :src="tv.imageUrl" 
+                            :src="tv.imageUrl"
+                            @click="tv.site === 'paopao' 
+                            ? router.push('/movie/' + tv.correlationId) : tv.site === 'nunu'
+                            ? router.push('/movieNunu/' + tv.correlationId) : router.push('/movie/' + tv.correlationId)"
                             @error="() => tv.imageUrl = '/imgFailure.jpg'" 
                             />
                         </template>

@@ -11,7 +11,16 @@
                 <hr style="width: 98%;opacity: 0.3;margin: 1px 0;">
                 <div class="calendar-cell" :class="getColorClass(current)">
                     <span class="date-num" :class="getFontClass(current)">
-                        <span style="float: left;margin-left: 8px;">{{ getLunarCalendar(current) }}</span>
+                        <a-tooltip placement="rightTop" :autoAdjustOverflow="true">
+                            <template #title>
+                                <ul style="margin-left: -24px;">
+                                    <li v-for="todo in getTodoList(current).todo">
+                                        <span>{{ todo.content }}</span>
+                                    </li>
+                                </ul>
+                            </template>
+                            <span style="float: left;margin-left: 8px;">{{ getLunarCalendar(current) }}</span>
+                        </a-tooltip>
                         <span style="float: right;margin-right: 8px;">{{ current.format('DD') }}</span>
                     </span>
                     <ul class="events">

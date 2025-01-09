@@ -1,24 +1,6 @@
 <template>
 	<Container @update:to-search="toSearch">
-		<a-card>
-			<template #title>免费阅读</template>
-			<template #extra>
-				<a v-antishake href="http://www.guoxue.com/" target="_blank">国学网</a>
-			</template>
-			<a-row :gutter="16">
-				<a-col :xl="4" :xs="8" v-for="(site, i) in novelSites">
-					<a-card :bordered="false" @click="toLinkNovelSite(site.url)"
-					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
-						<template #cover>
-							<img class="novel-poster" :alt="site.title" :src="site.poster" @error="() => site.poster = '/imgFailure.jpg'" />
-						</template>
-						<a-card-meta :title="site.title" style="text-align: center;">
-						</a-card-meta>
-					</a-card>							
-				</a-col>
-			</a-row>
-		</a-card>
-		<a-card :loading="loadingPic" style="margin-top: 24px">
+		<a-card :loading="loadingPic">
 			<template #title>
 				<a-row :gutter="16">
 					<a-col :xl="4" :xs="24">
@@ -42,7 +24,7 @@
 				<a v-antishake href="https://www.bizhihui.com/page/2/?order=views" target="_blank">更多</a>
 			</template>
 			<a-row :gutter="32">
-				<a-col :xl="12" :xs="24">
+				<a-col :sm="24" :md="12">
 					<a-carousel autoplay arrows>
 						<template #prevArrow>
 							<div class="custom-slick-arrow" style="left: 10px; z-index: 16">
@@ -66,9 +48,9 @@
 						</div>
 					</a-carousel>
 				</a-col>
-				<a-col class="col-pic-4k" :xl="12" :xs="24">
+				<a-col class="col-pic-4k" :sm="24" :md="12">
 					<a-row :gutter="16">
-						<a-col v-for="(pic, i) in pictures" :span="8">
+						<a-col v-for="(pic, i) in pictures" :xs="12" :sm="12" :md="8">
 							<a-card :bordered="false">
 								<template #cover>
 									<a-image :alt="pic.title" 
@@ -104,10 +86,10 @@
 		<a-card :loading="loadingTvV2" style="margin-top: 24px">
 			<template #title>
 				<a-row>
-					<a-col :xl="4" :xs="24">
+					<a-col :xs="24" :xl="4">
 						<span>V2影视</span>
 					</a-col>
-					<a-col id="col-mv-search" :xl="10" :xs="20">
+					<a-col id="col-mv-search" :xs="20" :xl="10">
 						<MyInputSearch
 							placeholder="请输入查询内容"
 							action1="本地搜索"
@@ -123,11 +105,8 @@
 					</a-col>
 				</a-row>
 			</template>
-			<!-- <template #extra>
-				<a v-antishake href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
-			</template> -->
 			<a-row :gutter="32">
-				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvsV2">
+				<a-col :xs="12" :sm="8" :xl="4" :md="4" v-for="(tv, i) in tvsV2">
 					<a-card :bordered="false" @click="router.push('/movieNunu/' + tv.id)"
 					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
 						<template #cover>
@@ -153,6 +132,7 @@
 						showQuickJumper
 						@change="toFindTvMoviesV2"
 						:show-total="(totalTvV2: number) => `总计 ${totalTvV2} 条 `"
+						style="margin-top: 5px;"
 					/>
 				</a-col>
 			</a-row>
@@ -179,11 +159,8 @@
 					</a-col>
 				</a-row>
 			</template>
-			<!-- <template #extra>
-				<a v-antishake href="https://www.fangsendq.com/vodshow/13-----------.html" target="_blank">更多</a>
-			</template> -->
 			<a-row :gutter="32">
-				<a-col :xl="4" :xs="8" v-for="(tv, i) in tvs">
+				<a-col :xs="12" :sm="8" :md="4" v-for="(tv, i) in tvs">
 					<a-card :bordered="false" @click="router.push('/movie/' + tv.id)"
 					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
 						<template #cover>
@@ -210,6 +187,25 @@
 						@change="toFindTvMovies"
 						:show-total="(totalTv: number) => `总计 ${totalTv} 条 `"
 					/>
+				</a-col>
+			</a-row>
+		</a-card>
+		<a-card style="margin-top: 24px">
+			<template #title>免费阅读</template>
+			<template #extra>
+				<a v-antishake href="http://www.guoxue.com/" target="_blank">国学网</a>
+			</template>
+			<a-row>
+				<a-col :xs="11" :sm="11" :md="7" :xl="3" v-for="site in novelSites" style="margin-left: 12px;">
+					<a :href="site.url" target="_blank">{{ site.title }}</a>
+					<!-- <a-card :bordered="false" @click="toLinkNovelSite(site.url)"
+					:style="{'margin-top': i > 5 ? '25px' : '0px' }">
+						<template #cover>
+							<img class="novel-poster" :alt="site.title" :src="site.poster" @error="() => site.poster = '/imgFailure.jpg'" />
+						</template>
+						<a-card-meta :title="site.title" style="text-align: center;">
+						</a-card-meta>
+					</a-card>							 -->
 				</a-col>
 			</a-row>
 		</a-card>
@@ -483,6 +479,10 @@ function toLinkNovelSite(url: string) {
 }
 
 @media (max-width: 576px) {
+	.ant-image {
+		display: block;
+	}
+
 	.novel-poster {
 		width: 100%;
 		height: 150px;
@@ -522,6 +522,48 @@ function toLinkNovelSite(url: string) {
 			width: 55px;
 			height: 55px;
 			margin-top: -50px;
+			font-size: 55px;
+			color: #fff;
+			background-color: rgba(31, 45, 61, 0.11);
+			opacity: 0.3;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:before {
+			display: none;
+		}
+	}
+
+	.ant-carousel {
+		.custom-slick-arrow:hover {
+			opacity: 0.5;
+		}
+	}
+}
+
+@media (min-width: 576px) and (max-width: 1200px) {
+	.ant-image {
+		display: block;
+	}
+
+	#col-pic-search {
+		margin-top: 12px;
+	}
+
+	#col-mv-search {
+		margin-top: 12px;
+	}
+
+	.ant-carousel .slick-dots-bottom {
+		bottom: 50px;
+	}
+
+	.ant-carousel {
+		.slick-arrow.custom-slick-arrow {
+			width: 55px;
+			height: 55px;
+			margin-top: -45px;
 			font-size: 55px;
 			color: #fff;
 			background-color: rgba(31, 45, 61, 0.11);

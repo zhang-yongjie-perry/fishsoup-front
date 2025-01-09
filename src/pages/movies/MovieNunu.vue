@@ -82,6 +82,8 @@ const playList = computed(() => {
     return key.value ? mv.playOrgs.find((org: PlayOrg) => org.orgName === key.value).playList : []
 })
 
+const nextList = ref<string[]>([])
+
 onMounted(() => {
     saved.value = false
     window.addEventListener('beforeunload', e => beforeunloadHandler(e))
@@ -121,6 +123,8 @@ onMounted(() => {
             m3u8Sid.value = res.data.hisM3u8Url
             let m3u8Url = await getM3u8Resource(res.data.hisM3u8Url)
             mvUrl.value = m3u8Url.data
+            nextList.value.splice(0)
+            nextList.value.push(mvUrl.value)
             initPlayer()
             loading.value = false    
             return
@@ -128,6 +132,8 @@ onMounted(() => {
         m3u8Sid.value = urlList.url_list[0][0].sid
         let m3u8Url = await getM3u8Resource(urlList.url_list[0][0].sid)
         mvUrl.value = m3u8Url.data
+        nextList.value.splice(0)
+        nextList.value.push(mvUrl.value)
         initPlayer()
         loading.value = false
     })
@@ -140,10 +146,12 @@ function initPlayer() {
         width: '100%',
         isLive: false,
         url: mvUrl.value,
+        autoplay: true,
         defaultMuted: true,
         plugins: [HlsPlugin],
         startTime: startTime.value,
         rotateFullscreen: true,
+        autoplayMuted: true, // 静音起播
         poster: 'mvPoster.jpg',
         hls: {
             retryCount: 5, // 重试 3 次，默认值
@@ -153,10 +161,13 @@ function initPlayer() {
                 // 该参数会透传给 fetch，默认值为 undefined
                 mode: 'cors'
             }
+        },
+        playnext: {
+            urlList: nextList.value
         }
     })
 
-    playerRef.value.on(Events.ENDED, () => {
+    playerRef.value.on(Events.ENDED, async () => {
         if (!playerRef.value) {
             return
         }
@@ -166,8 +177,32 @@ function initPlayer() {
             return
         }
         episode.value = playList.value[currentPvIndex + 1].episode
-        playerRef.value.seek(20)
-        playerRef.value.switchURL(playList.value[currentPvIndex + 1].m3u8Url)
+        let pid = playList.value[currentPvIndex + 1].m3u8Url
+        let m3u8Url = await getM3u8Resource(pid)
+        m3u8Sid.value = pid
+        mvUrl.value = m3u8Url.data
+        playerRef.value.playNext({
+            url: mvUrl.value,
+            autoplayMuted: false,
+        })
+    })
+
+    playerRef.value.on(Events.PLAYNEXT, async () => {
+        if (!playerRef.value) {
+            return
+        }
+
+        let currentPvIndex = playList.value.findIndex((pv: any) => pv.episode === episode.value)
+        if (currentPvIndex + 1 === playList.value.length) {
+            return
+        }
+        episode.value = playList.value[currentPvIndex + 1].episode
+        let pid = playList.value[currentPvIndex + 1].m3u8Url
+        let m3u8Url = await getM3u8Resource(pid)
+        m3u8Sid.value = pid
+        mvUrl.value = m3u8Url.data
+        playerRef.value.seek(0)
+        playerRef.value.switchURL(mvUrl.value)
     })
 }
 
@@ -182,9 +217,9 @@ async function onEpisodeChange(episodeVal: string, m3u8Url: string) {
     m3u8Sid.value = m3u8Url
     let m3u8UrlRes = await getM3u8Resource(m3u8Url)
     episode.value = episodeVal
-    playerRef.value.seek(20)
-    playerRef.value.switchURL(m3u8UrlRes.data)
     mvUrl.value = m3u8UrlRes.data
+    playerRef.value.seek(0)
+    playerRef.value.switchURL(mvUrl.value)
 }
 
 onBeforeUnmount(() => {

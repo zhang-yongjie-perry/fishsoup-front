@@ -1,11 +1,11 @@
 <template>
     <Container @update:to-search="toSearch">
-        <a-row class="row-tag">
+        <!-- <a-row class="row-tag">
             <a-col :span="24">
                 <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag>
             </a-col>
-        </a-row>
-        <a-row class="content" style="margin-top: 24px">
+        </a-row> -->
+        <a-row class="content" style="margin-top: 12px">
             <a-col :xl="8" :xs="24">
                 <a-row>
                     <a-col :xl="19" :xs="20">

@@ -15,11 +15,11 @@
                     <a-list-item>
                         <a-list-item-meta>
                             <template #title>
-                                <a-row style="width: 90%">
-                                    <a-col :sm="16" :xs="18">
+                                <a-row class="news_row">
+                                    <a-col :sm="16" :xs="17">
                                         <a v-antishake class="title-desc" :href="item.href" target="_blank">{{ item.title }}</a>
                                     </a-col>
-                                    <a-col :sm="8" :xs="6">
+                                    <a-col :sm="8" :xs="7">
                                         <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                     </a-col>
                                 </a-row>
@@ -243,5 +243,9 @@ function toGetFocusHotEntertainmentList() {
 </script>
 
 <style lang="scss">
-
+@media (min-width: 576px) {
+    .news_row {
+        width: 90%
+    }
+}
 </style>

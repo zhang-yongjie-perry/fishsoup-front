@@ -15,6 +15,10 @@
     filter: brightness(1.2); /* 增加亮度 */
 }
 
+.ant-pagination>li {
+    margin-top: 8px;
+}
+
 @media (max-width: 576px) {
     #hello {
         display: none;
@@ -106,8 +110,41 @@
             color: #fff;
             font-size: x-small;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+        }
+
+        @media (max-width: 400px) {
+            .entry-loginname {
+                display: inline-block;
+                width: 50px;
+                white-space: nowrap; /* 禁止文本换行 */
+                overflow: hidden; /* 隐藏溢出部分 */
+                text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+            }
         }
     
+        @media (min-width: 400px) and (max-width: 450px) {
+            .entry-loginname {
+                display: inline-block;
+                width: 70px;
+                white-space: nowrap; /* 禁止文本换行 */
+                overflow: hidden; /* 隐藏溢出部分 */
+                text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+            }
+        }
+
+        @media (min-width: 450px) and (max-width: 515px) {
+            .entry-loginname {
+                display: inline-block;
+                width: 100px;
+                white-space: nowrap; /* 禁止文本换行 */
+                overflow: hidden; /* 隐藏溢出部分 */
+                text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+            }
+        }
+
         .entry-title {
             color: #fff;
             font-size: x-small;
@@ -189,7 +226,7 @@
             flex-direction: row;
     
             .entry-element {
-                margin-left: 8px;
+                margin-left: 7px;
             }
         }
     
@@ -204,6 +241,7 @@
         .right-entry {
             float: right;
             margin-top: 12px;
+            margin-right: 12px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
@@ -214,6 +252,9 @@
             color: #fff;
             font-size: 12px;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
         }
     
         .entry-title {
@@ -245,9 +286,13 @@
     }
     .fish-header {
         width: 100%;
-        height: 144px;
+        height: 100px;
         background-color: #fff;
         background-image: url('/header-back.png');
+
+        .ant-col {
+            height: 30px;
+        }
     
         .ant-input-group-wrapper {
             margin-top: 16px;
@@ -266,6 +311,17 @@
                 border-radius: 0 10px 10px 0;
             }
         }
+
+        .ant-input {
+            font-size: 12px;
+            border: 0px;
+        }
+
+        .ant-btn {
+            font-size: 12px;
+            border: 0px;
+            margin-left: 0px
+        }
     
         .left-entry {
             float: left;
@@ -274,7 +330,7 @@
             flex-direction: row;
             font-size: 14px;
             .entry-element {
-                margin-left: 8px;
+                margin-left: 7px;
             }
         }
     
@@ -287,16 +343,24 @@
     
         .right-entry {
             float: right;
-            margin-right: -12px;
+            margin-top: 12px;
+            margin-right: -24px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
+
+            li {
+                margin-left: 20px;
+            }
         }
     
         .entry-username {
             color: #fff;
             font-size: 14px;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
         }
     
         .entry-title {
@@ -375,6 +439,7 @@
     
         .right-entry {
             float: right;
+            margin-right: -24px;
             list-style-type: none;
             display: flex;
             flex-direction: row;
@@ -384,6 +449,9 @@
             color: #fff;
             font-size: 14px;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
         }
     
         .entry-title {
@@ -470,6 +538,9 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
         }
     
         .entry-title {
@@ -557,6 +628,9 @@
             color: #fff;
             font-size: large;
             cursor: pointer;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
         }
     
         .entry-title {

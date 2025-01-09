@@ -37,8 +37,8 @@
                         </li>
                     </ul>
                 </a-col>
-                <a-col :xs="{span: 12, pull: 0}" :sm="{span: 10, pull: 1}" :md="{span: 12, push: 1}" 
-                :lg="{span: 12, push: 1}" :xl="{span: 8, pull: 1}">
+                <a-col :xs="{span: 11, pull: 0}" :sm="{span: 10, pull: 1}" :md="{span: 10, push: 0}" 
+                :lg="{span: 10, push: 1}" :xl="{span: 7, pull: 0}">
                     <a-input-search
                         v-model:value="searchRef"
                         :allowClear="true"
@@ -50,18 +50,17 @@
                     </a-input-search>
                 </a-col>
                 <a-col :xs="{span: 4, push: 1}" :sm="{span: 4, push: 1}" :md="{span: 4, push: 1}" 
-                :lg="{span: 4, push: 1}" :xl="{span: 2, push: 2}">
+                :lg="{span: 4, push: 2}" :xl="{span: 2, push: 2}">
                     <div class="go-back" @click="goBack()">返回</div>
                 </a-col>
-                <a-col :xs="{span: 8, pull: 1}" :sm="{span: 20, push: 0}" :md="{span: 20, push: 0}" 
-                :lg="{span: 20, push: 0}" :xl="{span: 3, push: 1}">
-                    <ul class="right-entry">
+                <a-col :xs="{span: 8, push: 0}" :sm="{span: 20, push: 0}" :md="{span: 24, pull: 1}" 
+                :lg="{span: 23, push: 0}" :xl="{span: 4, push: 1}">
+                    <ul class="right-entry" style="padding-inline-start: 10px;text-align: right;">
                         <li>
-                            <span v-if="userStore.loginName" class="entry-username">
-                                <span id="hello">您好,</span> 
+                            <span v-if="userStore.loginName">
                                 <a-dropdown placement="bottom">
                                     <a class="ant-dropdown-link" @click.prevent style="background-color: transparent;">
-                                        <span class="entry-username">{{ userStore.loginName }}</span>
+                                        <span class="entry-username entry-loginname">{{ userStore.loginName }}</span>
                                     </a>
                                     <template #overlay>
                                         <a-menu style="opacity: 0.9;">

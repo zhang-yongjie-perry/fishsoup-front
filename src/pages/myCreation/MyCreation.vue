@@ -2,7 +2,7 @@
     <Container @update:to-search="toSearch">
         <a-row class="row-tag">
             <a-col :xl="22" :xs="17">
-                <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag>
+                <!-- <a-tag class="tag" v-for="tag in tags" :color="tag.color">{{ tag.content }}</a-tag> -->
             </a-col>
             <a-col :xl="2" :xs="7">
                 <a-button v-antishake id="begin-create" type="primary" @click="toCreateDoc()" style="border-radius: 8px;">开始创作</a-button>
