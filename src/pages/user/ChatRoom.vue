@@ -4,7 +4,7 @@
             <a-row :gutter="12">
                 <a-col :xs="siderWith" :sm="10" :md="8" :lg="6" :xl="5" style="height: 74vh;overflow: auto;background-color: #0f0d0d;">
                     <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
-                        <a-menu-item v-for="friend in friends" :key="friend.username">
+                        <a-menu-item v-for="friend in friends" :key="friend.username" @click="toChat">
                             <a-row>
                                 <a-col :span="19">
                                     <span v-text="friend.username"></span>
@@ -137,8 +137,6 @@ useWebsocketStore().$subscribe(() => {
 
 // 对于同一个变量而言, 先触发watch方法, 后触发computed方法
 watch(() => selectedKeys.value, (value) => {
-    siderWith.value = 0
-    contentWith.value = 24
     let key = userStore.loginName + ":" + value[0]
     useWebsocketStore().setChatKey(key)
     // 选中的聊天好友设为已读
@@ -151,6 +149,11 @@ watch(() => selectedKeys.value, (value) => {
         msgWin.value.scrollTop = msgWin.value.scrollHeight
     })
 })
+
+const toChat = () => {
+    siderWith.value = 0
+    contentWith.value = 24
+}
 
 // 发送消息
 const sendMessage = () => {
