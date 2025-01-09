@@ -1,8 +1,16 @@
 <template>
     <Container>
         <div class="chat-room">
-            <a-row :gutter="12">
-                <a-col :xs="siderWith" :sm="10" :md="8" :lg="6" :xl="5" style="height: 74vh;overflow: auto;background-color: #0f0d0d;">
+            <a-layout>
+                <a-layout-sider
+                breakpoint="sm"
+                :collapsed-width="collapsedWidth"
+                width="220"
+                :collapsible="true"
+                v-model:collapsed="collapsed"
+                :trigger="null"
+                :style="{ overflow: 'auto', height: '74vh' }"
+                @breakpoint="breakpoint">
                     <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
                         <a-menu-item v-for="friend in friends" :key="friend.username">
                             <a-row>
@@ -18,16 +26,18 @@
                             </a-row>
                         </a-menu-item>
                     </a-menu>
-                </a-col>
-                <a-col :xs="contentWith" :sm="14" :md="16" :lg="18" :xl="19">
+                </a-layout-sider>
+                <a-layout-content>
                     <div class="chat-content">
                         <a-row style="padding: 3px 5px">
-                            <a-col :xs="1" :sm="0">
+                            <a-col :span="3">
                                 <menu-unfold-outlined
+                                v-if="collapsed"
                                 class="trigger"
-                                @click="toFold"/>
+                                @click="() => (collapsed = !collapsed)"/>
+                                <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
                             </a-col>
-                            <a-col :xs="23" :sm="24">
+                            <a-col :span="21">
                                 <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ selectedKeys[0] }}</span>
                             </a-col>
                         </a-row>
@@ -40,7 +50,7 @@
                                             <DialogBox :content="message.content"
                                             :style="{'float': (message.username === userStore.loginName ? 'right' : 'left')}"
                                             :position="message.username === userStore.loginName ? 'right' : 'left'">
-                                                <!-- <div>{{ message.username }}</div> -->
+                                                <div>{{ message.username }}</div>
                                             </DialogBox>
                                         </div>
                                     </div>
@@ -59,14 +69,14 @@
                             </a-col>
                         </a-row>
                     </div>
-                </a-col>
-            </a-row>
+                </a-layout-content>
+            </a-layout>
         </div>
     </Container>
 </template>
   
 <script setup lang="ts">
-import { reactive, ref, onMounted, watch, useTemplateRef, nextTick } from 'vue'
+import { reactive, ref, onMounted, watch, useTemplateRef, nextTick, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import DialogBox from '@/components/DialogBox.vue'
 import type { UserInfo, ChatUserInfo } from '@/interfaces/User'
@@ -74,10 +84,8 @@ import useUserInfo from '@/store/user'
 import { listUsers } from '@/api/user'
 import useWebsocketStore from '@/store/websocket'
 import Container from '@/components/Container.vue'
-import { MenuUnfoldOutlined } from '@ant-design/icons-vue'
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons-vue'
 
-const contentWith = ref(0)
-const siderWith = ref(24)
 const userStore = useUserInfo()
 const selectedKeys = ref<string[]>([])
 const inputMessage = ref('')
@@ -85,6 +93,9 @@ const friends = reactive<UserInfo[]>([])
 const msgShow: any = reactive([])
 const msgWin = ref<any>(null)
 const messagesMap: any = useWebsocketStore().getMessage()!
+const collapsed = ref(false)
+const isXs = ref(false)
+const collapsedWidth = ref(0)
 
 onMounted(() => {
     // 进入聊天页置空提醒
@@ -137,8 +148,9 @@ useWebsocketStore().$subscribe(() => {
 
 // 对于同一个变量而言, 先触发watch方法, 后触发computed方法
 watch(() => selectedKeys.value, (value) => {
-    siderWith.value = 0
-    contentWith.value = 24
+    if (isXs.value) {
+        collapsed.value = true
+    }
     let key = userStore.loginName + ":" + value[0]
     useWebsocketStore().setChatKey(key)
     // 选中的聊天好友设为已读
@@ -227,10 +239,13 @@ function handleKeyup(event: any) {
     }
 }
 
-function toFold() {
-    contentWith.value = 0
-    siderWith.value = 24
+function breakpoint(param: boolean) {
+    isXs.value = param
+    if (param) {
+        collapsed.value = true
+    }
 }
+
 </script>
 
 <style scoped>

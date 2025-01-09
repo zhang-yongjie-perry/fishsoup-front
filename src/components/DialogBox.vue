@@ -1,17 +1,17 @@
 <template>
-    <div>
+    <div style="white-space: nowrap">
         <div v-if="position === 'left'" style="position: relative;display: inline-block">
             <div style="margin-left: 24px;font-size: xx-small;opacity: 0.7;margin-bottom: 5px;">
                 <slot></slot>
             </div>
             <div class="guide-left"></div>
             <div class="dialog-box-left">
-                <span style="display:inline-block; padding: 8px;max-width: 400px;white-space: normal;word-break: break-word;" v-text="content"></span>
+                <span class="dialog-content" v-text="content"></span>
             </div>
         </div>
         <div v-else style="position: relative;display: inline-block">
             <div class="dialog-box-right">
-                <span style="display:inline-block; padding: 8px;max-width: 400px;white-space: normal;word-break: break-word;" v-text="content"></span>
+                <span class="dialog-content" v-text="content"></span>
             </div>
             <div class="guide-right"></div>
         </div>
@@ -54,5 +54,35 @@ const { position = 'left', content } = defineProps(['position', 'content'])
     border-radius: 5px;
     background-color: #93f482;
     vertical-align: top;
+}
+
+@media (max-width: 750px) {
+    .dialog-content {
+        display:inline-block;
+        padding: 8px;
+        white-space: normal;
+        word-break: break-word;
+        max-width: 250px;   
+    }
+}
+
+@media (min-width: 750px) and (max-width: 930px) {
+    .dialog-content {
+        display:inline-block;
+        padding: 8px;
+        white-space: normal;
+        word-break: break-word;
+        max-width: 340px;   
+    }
+}
+
+@media (min-width: 930px) {
+    .dialog-content {
+        display:inline-block;
+        padding: 8px;
+        white-space: normal;
+        word-break: break-word;
+        max-width: 500px;   
+    }
 }
 </style>

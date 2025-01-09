@@ -10,7 +10,7 @@ import '@/assets/iconfont/iconfont.js'
 import useRouterState from '@/store/router'
 import useUserInfo from '@/store/user'
 import { warningAlert } from '@/utils/AlertUtil'
-import { connectWebSocket } from '@/utils/websocketUtil'
+import { chatOnline } from '@/utils/websocketUtil'
 import { useWebsocketStore } from '@/store/websocket'
 import { init } from '@/utils/init'
 
@@ -23,10 +23,12 @@ app.use(router)
 app.mount('#app')
 
 // 守卫路由
+let currentUrl = null
 const userState = useUserInfo()
 const routerState = useRouterState()
 const whiteList = ['/', '/login']
 router.beforeEach((to, from, next) => {
+    currentUrl = routerState.to
     if (!whiteList.includes(to.path) && !userState.token) {
         warningAlert('您尚未登录, 请先登录')
         router.push("/login")
@@ -34,6 +36,10 @@ router.beforeEach((to, from, next) => {
     }
     routerState.from = from.path
     routerState.to = to.path
+    if (!whiteList.includes(routerState.to === undefined || !routerState.to ? "/" : routerState.to) 
+        && userState.token && useWebsocketStore().getWebsocket()?.readyState !== WebSocket.OPEN) {
+        chatOnline()
+    }
     next()
 })
 
@@ -55,10 +61,6 @@ app.directive('antishake', (el, binding) => {
         }
     })
 })
-
-if (userState.token && useWebsocketStore().getWebsocket()?.readyState !== WebSocket.OPEN) {
-    connectWebSocket()
-}
 
 // 获取展示菜单
 if (userState.token) {
