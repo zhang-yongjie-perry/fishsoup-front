@@ -36,7 +36,9 @@ export interface Creation {
     classify: string | null,
     visibleRange: string | null,
     content: string | null,
-    toDelImages: string[]
+    toDelImages: string[],
+    createTime: string,
+    updateTime: string
 }
 
 export interface PlayMovie {

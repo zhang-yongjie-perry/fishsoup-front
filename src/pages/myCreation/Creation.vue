@@ -31,6 +31,10 @@
         <a-row style="margin-bottom: 16px">
             <a-col :span="24">
                 <div v-if="routerState.readOnly">
+                    <div style="margin-bottom: 5px;">
+                        <span>创建时间：{{ creation.createTime }}</span>
+                        <span style="margin-left: 20px">修改时间：{{ creation.updateTime }}</span>
+                    </div>
                     <a v-if="routerState.personal" @click="allowEdit()">[修改]</a>
                     概述：{{ creation.summary }}
                 </div>
@@ -78,7 +82,9 @@ const creation = reactive<Creation>({
     classify: '1',
     visibleRange: '1',
     content: '',
-    toDelImages: []
+    toDelImages: [],
+    createTime: '',
+    updateTime: ''
 })
 
 watch(() => routerState.readOnly, (value: boolean | undefined) => {
@@ -110,6 +116,8 @@ onMounted(() => {
         creation.summary = presentedCreation.summary
         creation.classify = presentedCreation.classify
         creation.visibleRange = presentedCreation.visibleRange
+        creation.createTime = presentedCreation.createTime
+        creation.updateTime = presentedCreation.updateTime
         htmlContent.value = presentedCreation.content
         originContent.value = presentedCreation.content
     })

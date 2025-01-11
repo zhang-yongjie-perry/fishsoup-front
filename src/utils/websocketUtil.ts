@@ -47,7 +47,9 @@ export const chatOnline = () => {
         connectWebSocket()
         return
     }
-    websocket.send(userState.token)
+    if (websocket.readyState == WebSocket.OPEN) {
+        websocket.send(userState.token)
+    }
 }
 
 export const chatOffline = () => {
