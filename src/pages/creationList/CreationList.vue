@@ -1,7 +1,7 @@
 <template>
     <Container :today="date" @update:memo="updateMemo" @update:to-search="toSearch">
         <a-row class="tags-search">
-            <a-col :xs="24" :sm="8">
+            <a-col :span="16">
                 <a-select
                     v-model:value="tagValue"
                     mode="tags"
@@ -11,7 +11,7 @@
                     allowClear
                 ></a-select>
             </a-col>
-            <a-col :xs="3" :sm="3">
+            <a-col :span="3">
                 <a-button style="border-radius: 5px;" @click="toGetCreationList(1, false)">搜索</a-button>
             </a-col>
         </a-row>
@@ -181,8 +181,16 @@ function getTagColor() {
     }
 }
 
-.tags-search {
-    margin-left: 24px;
+@media (max-width: 576px) {
+    .tags-search {
+        margin-left: 12px;
+    }    
+}
+
+@media (min-width: 576px) {
+    .tags-search {
+        margin-left: 24px;
+    }    
 }
 
 @media (max-width: 1200px) {
