@@ -27,13 +27,20 @@ let currentUrl = null
 const userState = useUserInfo()
 const routerState = useRouterState()
 const whiteList = ['/', '/login']
-router.beforeEach((to, from, next) => {
+
+router.beforeEach(async (to, from, next) => {
     currentUrl = routerState.to
     if (!whiteList.includes(to.path) && !userState.token) {
         warningAlert('您尚未登录, 请先登录')
         router.push("/login")
         return
     }
+
+    // 获取展示菜单
+    if (userState.token && (!routerState.getMenus() || routerState.getMenus().length < 1)) {
+        await init()
+    }
+
     routerState.from = from.path
     routerState.to = to.path
     if (!whiteList.includes(routerState.to === undefined || !routerState.to ? "/" : routerState.to) 
@@ -61,8 +68,3 @@ app.directive('antishake', (el, binding) => {
         }
     })
 })
-
-// 获取展示菜单
-if (userState.token) {
-    init()
-}
