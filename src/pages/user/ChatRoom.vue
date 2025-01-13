@@ -2,22 +2,26 @@
     <Container>
         <div class="chat-room">
             <a-row :gutter="12">
-                <a-col :xs="siderWith" :sm="10" :md="8" :lg="6" :xl="5" style="height: 74vh;overflow: auto;background-color: #0f0d0d;">
-                    <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
-                        <a-menu-item v-for="friend in friends" :key="friend.username" @click="toChat">
-                            <a-row>
-                                <a-col :span="19">
-                                    <span v-text="friend.username"></span>
-                                </a-col>
-                                <a-col :span="5">
-                                    <span>[{{ friend.onlineStatus }}]</span>
-                                    <a-badge :dot="messagesMap[userStore.loginName + ':' + friend.username] 
-                                        ? messagesMap[userStore.loginName + ':' + friend.username]!.status == 0 : false">
-                                    </a-badge>
-                                </a-col>
-                            </a-row>
-                        </a-menu-item>
-                    </a-menu>
+                <a-col :xs="siderWith" :sm="10" :md="8" :lg="6" :xl="5" style="background-color: #0f0d0d;">
+                    <div class="online-status">状态：{{ !(useWebsocketStore().getWebsocket()) ? '离线' 
+                    : useWebsocketStore().getWebsocket()?.readyState == 1 ? '在线' : '离线' }}</div>
+                    <div style="height: 70vh;overflow: auto;">
+                        <a-menu v-model:selectedKeys="selectedKeys" theme="dark">
+                            <a-menu-item v-for="friend in friends" :key="friend.username" @click="toChat">
+                                <a-row>
+                                    <a-col :span="19">
+                                        <span v-text="friend.username"></span>
+                                    </a-col>
+                                    <a-col :span="5">
+                                        <span>[{{ friend.onlineStatus }}]</span>
+                                        <a-badge :dot="messagesMap[userStore.loginName + ':' + friend.username] 
+                                            ? messagesMap[userStore.loginName + ':' + friend.username]!.status == 0 : false">
+                                        </a-badge>
+                                    </a-col>
+                                </a-row>
+                            </a-menu-item>
+                        </a-menu>
+                    </div>
                 </a-col>
                 <a-col :xs="contentWith" :sm="14" :md="16" :lg="18" :xl="19">
                     <div class="chat-content">
@@ -305,5 +309,14 @@ function toFold() {
 
 .friend-item:hover {
     background-color: #444;
+}
+
+.online-status {
+    color: white;
+    height: 30px;
+    /* 居中对齐三件套 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

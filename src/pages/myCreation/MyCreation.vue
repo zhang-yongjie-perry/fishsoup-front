@@ -33,6 +33,9 @@
                                                     </router-link>
                                                     <SvgIcon v-if="item.visibleRange === '1'" iconName="icon-suoding"/>
                                                     <SvgIcon v-else iconName="icon-jiesuo"/>
+                                                    <span style="margin-left: 5px;">
+                                                        <a-tag v-for="tag in item.tags" :color="getTagColor()">{{ tag }}</a-tag>
+                                                    </span>
                                                 </a-col>
                                                 <a-col :xl="5" :xs="6">
                                                     <div style="width: 100%;text-align: right;">{{ item.time }}</div>
@@ -52,7 +55,7 @@
 
 <script setup lang="ts">
 import Container from '@/components/Container.vue'
-import { onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import type { Tag, DataItem } from '@/interfaces/Entity'
 import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -95,7 +98,9 @@ const sectorList: any = reactive([
         page: 'essay',
         dataSource: essayDataList
     },
-]);
+])
+
+const tagColors = ref(['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple'])
 
 onMounted(() => {
     routerState.readOnly = true
@@ -146,6 +151,10 @@ function toSearch() {
     toListCreations('2');
     // 查询日志随笔
     toListCreations('3');
+}
+
+function getTagColor() {
+    return tagColors.value[Math.floor(Math.random() * tagColors.value.length)]
 }
 </script>
 

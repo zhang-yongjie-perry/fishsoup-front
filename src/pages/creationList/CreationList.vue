@@ -1,6 +1,21 @@
 <template>
     <Container :today="date" @update:memo="updateMemo" @update:to-search="toSearch">
-        <a-row class="content">
+        <a-row class="tags-search">
+            <a-col :xs="24" :sm="8">
+                <a-select
+                    v-model:value="tagValue"
+                    mode="tags"
+                    style="width: 90%;"
+                    :token-separators="[',']"
+                    placeholder="请输入标签进行搜索"
+                    allowClear
+                ></a-select>
+            </a-col>
+            <a-col :xs="3" :sm="3">
+                <a-button style="border-radius: 5px;" @click="toGetCreationList(1, false)">搜索</a-button>
+            </a-col>
+        </a-row>
+        <a-row class="content" style="margin-top: 12px">
             <a-col :xs="24" :xl="18">
                 <a-row>
                     <a-col :span="24">
@@ -11,11 +26,10 @@
                     <a-col :span="24">
                         <hr>
                         <a-list
-                            item-layout="horizontal" 
-                            :data-source="dataSource" 
-                            :locale="{emptyText: '暂无数据'}"
-                            :loading="loading"
-                            >
+                        item-layout="horizontal" 
+                        :data-source="dataSource" 
+                        :locale="{emptyText: '暂无数据'}"
+                        :loading="loading">
                             <template #loadMore>
                                 <div v-if="hasMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                                     <a-spin v-if="loadingMore" />
@@ -38,6 +52,9 @@
                                                     <span v-else>
                                                         &nbsp;
                                                         <span>[作者：{{ item.author }}]</span>
+                                                    </span>
+                                                    <span style="margin-left: 5px;">
+                                                        <a-tag v-for="tag in item.tags" :color="getTagColor()">{{ tag }}</a-tag>
                                                     </span>
                                                 </a-col>
                                                 <a-col :xl="2" :xs="8">
@@ -102,8 +119,11 @@ const searchTextState = useSearchTextState()
 const day = ref<Dayjs>()
 const date = ref(getToday())
 const memoVal = ref('今天什么事情也没有安排, 请享受这美好时光吧~')
+const tagValue = ref<string[]>()
+const tagColors = ref(['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple'])
 
 onMounted(() => {
+    tagValue.value?.splice(0)
     toGetCreationList(1, false)
 })
 
@@ -124,7 +144,8 @@ function toGetCreationList(pn: number | null, append: boolean) {
         classify: classifyVal, 
         author: authorVal,
         visibleRange: visibleRangeVal,
-        content: searchTextState.getSearchText()
+        content: searchTextState.getSearchText(),
+        tags: tagValue.value
     }, pageNum.value, 10).then(res => {
         if (res.data.code === '1') {
             warningAlert(res.data.msg);
@@ -143,6 +164,10 @@ function toGetCreationList(pn: number | null, append: boolean) {
 function toSearch(value: string) {
     toGetCreationList(1, false)
 }
+
+function getTagColor() {
+    return tagColors.value[Math.floor(Math.random() * tagColors.value.length)]
+}
 </script>
 
 <style lang="scss">
@@ -154,6 +179,10 @@ function toSearch(value: string) {
         padding: 0px;
         color: black
     }
+}
+
+.tags-search {
+    margin-left: 24px;
 }
 
 @media (max-width: 1200px) {

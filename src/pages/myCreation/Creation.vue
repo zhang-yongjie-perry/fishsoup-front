@@ -9,22 +9,32 @@
             </a-col>
         </a-row>
         <a-row v-else style="margin: 12px 0px 16px 0px">
-            <a-col :xl="12" :xs="24">
+            <a-col :xs="24" :xl="9">
                 <a-input v-model:value="creation.title" placeholder="请输入标题" style="border-radius: 5px"/>
             </a-col>
-            <a-col class="col-btn" :xl="{span: 2, offset: 1}" :xs="{span: 6}">
+            <a-col class="col-btn tags" :xs="24" :xl="8">
+                <a-select
+                    v-model:value="tagValue"
+                    mode="tags"
+                    style="width: 80%;"
+                    :token-separators="[',']"
+                    placeholder="请输入标签"
+                    :options="tagOptions"
+                ></a-select>
+            </a-col>
+            <a-col class="col-btn" :xs="6" :xl="2">
                 <a-select
                     v-model:value="creation.classify"
                     :options="[{value: '1', label: '专业'}, {value: '2', label: '文学'}, {value: '3', label: '随笔'}]"
                 ></a-select>
             </a-col>
-            <a-col class="col-btn" :xl="2" :xs="6">
+            <a-col class="col-btn" :xs="6" :xl="2">
                 <a-select
                     v-model:value="creation.visibleRange"
                     :options="[{value: '1', label: '私密'}, {value: '2', label: '公开'}]"
                 ></a-select>
             </a-col>
-            <a-col class="col-btn" :xl="2" :xs="6">
+            <a-col class="col-btn" :xs="6" :xl="2">
                 <a-button v-antishake @click="toSaveCreation(false)" type="primary" style="border-radius: 5px">保存</a-button>
             </a-col>
         </a-row>
@@ -34,6 +44,10 @@
                     <div style="margin-bottom: 5px;">
                         <span>创建时间：{{ creation.createTime }}</span>
                         <span style="margin-left: 20px">修改时间：{{ creation.updateTime }}</span>
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        标签：
+                        <a-tag v-for="tag in tagValue" :color="getTagColor()">{{ tag }}</a-tag>
                     </div>
                     <a v-if="routerState.personal" @click="allowEdit()">[修改]</a>
                     概述：{{ creation.summary }}
@@ -63,7 +77,9 @@ import { useUserInfo } from '@/store/user'
 import { saveCreation, getCreation } from '@/api/creation'
 import { successAlert, warningAlert } from '@/utils/AlertUtil'
 import useRouterState from '@/store/router'
+import type { SelectProps } from 'ant-design-vue'
 
+const tagColors = ref(['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple'])
 const { id } = defineProps<{ id?: String }>()
 const routerState = useRouterState()
 const textContent = ref('')
@@ -71,6 +87,8 @@ const htmlContent = ref('')
 const timerId = ref(0)
 const alreadySaved = ref(true)
 const originContent = ref('<p><br></p>')
+const tagValue = ref<string[]>([])
+const tagOptions = ref<SelectProps['options']>([]);
 
 const useUser = useUserInfo()
 const creation = reactive<Creation>({
@@ -84,7 +102,8 @@ const creation = reactive<Creation>({
     content: '',
     toDelImages: [],
     createTime: '',
-    updateTime: ''
+    updateTime: '',
+    tags: []
 })
 
 watch(() => routerState.readOnly, (value: boolean | undefined) => {
@@ -118,9 +137,24 @@ onMounted(() => {
         creation.visibleRange = presentedCreation.visibleRange
         creation.createTime = presentedCreation.createTime
         creation.updateTime = presentedCreation.updateTime
+        tagValue.value.splice(0)
+        creation.tags.splice(0)
+        tagOptions.value?.splice(0)
+        if (presentedCreation.tags && presentedCreation.tags.length > 0) {
+            tagValue.value.push(...presentedCreation.tags)
+            creation.tags.push(...presentedCreation.tags)
+            tagOptions.value?.push(...presentedCreation.tags.map((tag: string) => {
+                return { value: tag, label: tag }
+            }))
+        }
         htmlContent.value = presentedCreation.content
         originContent.value = presentedCreation.content
     })
+})
+
+watch(tagValue, () => {
+    creation.tags.splice(0)
+    creation.tags.push(...tagValue.value)
 })
 
 watch(
@@ -213,6 +247,10 @@ function handleKeydown(event: any) {
 function allowEdit() {
     routerState.readOnly = false
 }
+
+function getTagColor() {
+    return tagColors.value[Math.floor(Math.random() * tagColors.value.length)]
+}
 </script>
 
 <style lang="scss">
@@ -220,9 +258,19 @@ function allowEdit() {
     border-radius: 5px
 }
 
-@media (max-width: 576px) {
+@media (max-width: 1200px) {
     .col-btn {
         margin-top: 12px
+    }
+
+    .tags {
+        margin-left: 0px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .tags {
+        margin-left: 24px;
     }
 }
 </style>

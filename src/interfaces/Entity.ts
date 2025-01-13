@@ -38,7 +38,8 @@ export interface Creation {
     content: string | null,
     toDelImages: string[],
     createTime: string,
-    updateTime: string
+    updateTime: string,
+    tags: string[]
 }
 
 export interface PlayMovie {

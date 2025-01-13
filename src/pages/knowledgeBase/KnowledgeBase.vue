@@ -64,8 +64,11 @@
                                                     </router-link>
                                                     &nbsp
                                                     <span>[作者：{{ item.author }}]</span>
-                                                </a-col>
-                                                <a-col :xl="5" :xs="6">
+                                                    <span style="margin-left: 5px;">
+                                                        <a-tag v-for="tag in item.tags" :color="getTagColor()">{{ tag }}</a-tag>
+                                                    </span>
+                                                    </a-col>
+                                                    <a-col :xl="5" :xs="6">
                                                     <div style="width: 100%;text-align: right">{{ item.time }}</div>
                                                 </a-col>
                                             </a-row>
@@ -83,7 +86,7 @@
 
 <script setup lang="ts">
 import Container from '@/components/Container.vue'
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, ref } from 'vue'
 import type { Tag, DataItem } from '@/interfaces/Entity'
 import { listCreations, listHotNews } from '@/api/creation'
 import { warningAlert } from '@/utils/AlertUtil'
@@ -120,6 +123,8 @@ const sectorList: any = reactive([
         dataSource: literatureDataList
     },
 ])
+
+const tagColors = ref(['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple'])
 
 onMounted(() => {
     routerState.readOnly = true
@@ -172,6 +177,10 @@ function toSearch() {
     toListCreations('1')
     // 查询文学作品
     toListCreations('2')
+}
+
+function getTagColor() {
+    return tagColors.value[Math.floor(Math.random() * tagColors.value.length)]
 }
 </script>
 
